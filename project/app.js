@@ -34,9 +34,8 @@ var Player = function(identity) {
 		}
 		else if(self.pressRight) {
 			self.x += self.maxSpeed;
-		}
-		
-		else if(self.pressDown) {
+		}		
+		if(self.pressDown) {
 			self.y += self.maxSpeed;
 		}
 		else if(self.pressUp) {
@@ -66,7 +65,7 @@ io.sockets.on('connection', function(socket) {
 		else if(data.inputId == 'right') {
 			player.pressRight = data.state;
 		}	
-		else if(data.inputId == 'down') {
+		if(data.inputId == 'down') {
 			player.pressDown = data.state;
 		}
 		else if(data.inputId == 'up') {
