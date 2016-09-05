@@ -9,6 +9,11 @@
 <script>
 	var SCREEN_WIDTH = 500;
 	var SCREEN_HEIGHT = 500;
+	var VIEW_WIDTH = 100;
+	var VIEW_HEIGHT = 100;
+	var PLAYER_SIZE = 10;
+	
+	var PLAYER_LIST = {};
 	var socket = io();
 
 	// theme selections
@@ -36,27 +41,20 @@
 	// game area
 	var ctx = document.getElementById("ctx").getContext("2d");
 	ctx.font = '30px Arial';
-	
-	<!--
-	/*
-	var Player = function(initPlayPack) {
-		var self = {};
-		self.id = initPlayPack.id;
-		self.number = initPlayPack.number;
-		self.x = initPlayPack.x;
-		self.y = initPlayPack.y;
-	}
-	*/
-	-->
 
-	var drawMap = function() {
-		ctx.drawImage(Img.map, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-	}
+//	var drawMap = function() {
+//		ctx.drawImage(Img.map, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+//	}
 	
 	socket.on('newPositions',function(data) {
-		ctx.clearRect(0,0,500,500);
-		ctx.drawImage(Img.map, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		for(var i = 0; i < data.length; i++) {
+			pCenterX = data[i].x + PLAYER_SIZE/2;
+			pCenterY = data[i].y + PLAYER_SIZE/2;
+			clipX = pCenterX - VIEW_WIDTH/2;
+			clipY = pCenterY - VIEW_HEIGHT/2;
+			//drawImage(image, clipX, clipY, clipWidth, clipHeight, xPos, yPos, imageWidth, imageHeight)
+			ctx.drawImage(Img.map,clipX,clipY,100,100,0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 			ctx.drawImage(Img.player,data[i].x,data[i].y), 1, 1;
 		}
 	});

@@ -42,6 +42,7 @@ var Player = function(identity) {
 			self.y -= self.maxSpeed;
 		}
 	}
+	
 	return self;
 }
 
@@ -82,7 +83,7 @@ setInterval(function() {
 		playPackage.push({
 			x:player.x,
 			y:player.y,
-			number:player.number
+			id:player.id
 		});
 	}
 	
