@@ -26,7 +26,7 @@ var Player = function(identity) {
 		pressRight:false,
 		pressDown:false,
 		pressUp:false,
-		maxSpeed:10
+		maxSpeed:1
 	}
 	self.updatePosition = function() {
 		if(self.pressLeft) {
@@ -49,7 +49,11 @@ var Player = function(identity) {
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
 	socket.id = Math.random();
+	var sessionid = socket.id;
 	SOCKET_LIST[socket.id] = socket;
+	
+	socket.emit('init',{selfId:sessionid});
+	console.log("init " + sessionid);
 	
 	var player = Player(socket.id);
 	PLAYER_LIST[socket.id] = player;
@@ -83,7 +87,7 @@ setInterval(function() {
 		playPackage.push({
 			x:player.x,
 			y:player.y,
-			id:player.id
+			id:player.id,
 		});
 	}
 	

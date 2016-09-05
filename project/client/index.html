@@ -41,21 +41,30 @@
 	// game area
 	var ctx = document.getElementById("ctx").getContext("2d");
 	ctx.font = '30px Arial';
-
-//	var drawMap = function() {
-//		ctx.drawImage(Img.map, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-//	}
+	
+	var clientId = null;
+	
+	socket.on('init',function(data) {
+		if(data.selfId) {
+			clientId = data.selfId;
+		}
+	});
 	
 	socket.on('newPositions',function(data) {
 		ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		for(var i = 0; i < data.length; i++) {
-			pCenterX = data[i].x + PLAYER_SIZE/2;
-			pCenterY = data[i].y + PLAYER_SIZE/2;
-			clipX = pCenterX - VIEW_WIDTH/2;
-			clipY = pCenterY - VIEW_HEIGHT/2;
-			//drawImage(image, clipX, clipY, clipWidth, clipHeight, xPos, yPos, imageWidth, imageHeight)
-			ctx.drawImage(Img.map,clipX,clipY,100,100,0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-			ctx.drawImage(Img.player,data[i].x,data[i].y), 1, 1;
+			if(data[i].id == clientId) {
+				pCenterX = data[i].x + PLAYER_SIZE/2;
+				pCenterY = data[i].y + PLAYER_SIZE/2;
+				clipX = pCenterX - VIEW_WIDTH/2;
+				clipY = pCenterY - VIEW_HEIGHT/2;
+				//drawImage(image, clipX, clipY, clipWidth, clipHeight, xPos, yPos, imageWidth, imageHeight)
+				ctx.drawImage(Img.map, clipX, clipY, 100, 100, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);		
+			}
+		}
+
+		for(var i = 0; i < data.length; i++) {
+			ctx.drawImage(Img.player, data[i].x, data[i].y, 50, 50);
 		}
 	});
 	
