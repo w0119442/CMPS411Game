@@ -7,11 +7,11 @@
 <script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
 
 <script>
-	var SCREEN_WIDTH = 500;
-	var SCREEN_HEIGHT = 500;
-	var VIEW_WIDTH = 100;
-	var VIEW_HEIGHT = 100;
-	var PLAYER_SIZE = 10;
+	var WORLD_WIDTH = 1000;
+	var WORLD_HEIGHT = 1000;
+	var VIEW_WIDTH = 500;
+	var VIEW_HEIGHT = 500;
+	var PLAYER_SIZE = 50;
 	
 	var PLAYER_LIST = {};
 	var socket = io();
@@ -51,20 +51,36 @@
 	});
 	
 	socket.on('newPositions',function(data) {
-		ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
+		
+		var playerX = 0.0;
+		var playerY = 0.0;
+		var pCenterX = 0.0;
+		var pCenterY = 0.0;
+		
 		for(var i = 0; i < data.length; i++) {
 			if(data[i].id == clientId) {
-				pCenterX = data[i].x + PLAYER_SIZE/2;
-				pCenterY = data[i].y + PLAYER_SIZE/2;
+				playerX = data[i].x;
+				playerY = data[i].y;
+				pCenterX = playerX + PLAYER_SIZE/2;
+				pCenterY = playerY + PLAYER_SIZE/2;
 				clipX = pCenterX - VIEW_WIDTH/2;
 				clipY = pCenterY - VIEW_HEIGHT/2;
 				//drawImage(image, clipX, clipY, clipWidth, clipHeight, xPos, yPos, imageWidth, imageHeight)
-				ctx.drawImage(Img.map, clipX, clipY, 100, 100, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);		
+				ctx.drawImage(Img.map, clipX, clipY, VIEW_WIDTH, VIEW_HEIGHT, 0, 0, VIEW_WIDTH, VIEW_HEIGHT);		
 			}
 		}
 
 		for(var i = 0; i < data.length; i++) {
-			ctx.drawImage(Img.player, data[i].x, data[i].y, 50, 50);
+//			ctx.drawImage(Img.player, data[i].x * alterX, data[i].y * alterY, 50, 50);
+			if(data[i].id == clientId) {
+				ctx.drawImage(Img.player, (VIEW_WIDTH - PLAYER_SIZE)/2, (VIEW_HEIGHT - PLAYER_SIZE)/2, PLAYER_SIZE, PLAYER_SIZE);
+			}
+			else if(Math.abs(pCenterX - data[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data[i].y) < VIEW_HEIGHT) {
+				var otherX = data[i].x - pCenterX + VIEW_WIDTH/2;
+				var otherY = data[i].y - pCenterY + VIEW_HEIGHT/2;
+				ctx.drawImage(Img.player, otherX, otherY, PLAYER_SIZE, PLAYER_SIZE);
+			}
 		}
 	});
 	

@@ -15,9 +15,12 @@ var PLAYER_LIST = {};
 
 var WINDOW_WIDTH = 500;
 var WINDOW_HEIGHT = 500;
+var MAP_SIZE = 1000;
 
 var Player = function(identity) {
 	var self = {
+//		x:Math.floor((MAP_SIZE - WINDOW_WIDTH) * Math.random()) + WINDOW_WIDTH/2,
+//		y:Math.floor((MAP_SIZE - WINDOW_HEIGHT) * Math.random()) + WINDOW_HEIGHT/2,
 		x:Math.floor(WINDOW_WIDTH * Math.random()),
 		y:Math.floor(WINDOW_HEIGHT * Math.random()),
 		id:identity,
@@ -26,7 +29,7 @@ var Player = function(identity) {
 		pressRight:false,
 		pressDown:false,
 		pressUp:false,
-		maxSpeed:1
+		maxSpeed:5
 	}
 	self.updatePosition = function() {
 		if(self.pressLeft) {
@@ -88,6 +91,7 @@ setInterval(function() {
 			x:player.x,
 			y:player.y,
 			id:player.id,
+			speed:player.maxSpeed,
 		});
 	}
 	
