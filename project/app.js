@@ -13,16 +13,17 @@ console.log("Server started.");
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
 
-var WINDOW_WIDTH = 500;
+var WORLD_WIDTH = 500;
 var WINDOW_HEIGHT = 500;
-var MAP_SIZE = 1000;
+var MAP_SIZE = 5000;
+var PLAYER_SIZE = 50;
 
 var Player = function(identity) {
 	var self = {
-//		x:Math.floor((MAP_SIZE - WINDOW_WIDTH) * Math.random()) + WINDOW_WIDTH/2,
-//		y:Math.floor((MAP_SIZE - WINDOW_HEIGHT) * Math.random()) + WINDOW_HEIGHT/2,
-		x:Math.floor(WINDOW_WIDTH * Math.random()),
-		y:Math.floor(WINDOW_HEIGHT * Math.random()),
+		x:Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random()),
+		y:Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random()),
+//		x:Math.floor(WINDOW_WIDTH * Math.random()),
+//		y:Math.floor(WINDOW_HEIGHT * Math.random()),
 		id:identity,
 		number:"" + Math.floor(10 * Math.random()),
 		pressLeft:false,
@@ -32,16 +33,16 @@ var Player = function(identity) {
 		maxSpeed:5
 	}
 	self.updatePosition = function() {
-		if(self.pressLeft) {
+		if(self.pressLeft && self.x - self.maxSpeed > 0) {
 			self.x -= self.maxSpeed;
 		}
-		else if(self.pressRight) {
+		else if(self.pressRight && self.x + PLAYER_SIZE + self.maxSpeed < MAP_SIZE) {
 			self.x += self.maxSpeed;
 		}		
-		if(self.pressDown) {
+		if(self.pressDown && self.y + PLAYER_SIZE + self.maxSpeed < MAP_SIZE) {
 			self.y += self.maxSpeed;
 		}
-		else if(self.pressUp) {
+		else if(self.pressUp && self.y - self.maxSpeed > 0) {
 			self.y -= self.maxSpeed;
 		}
 	}
