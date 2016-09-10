@@ -2,7 +2,7 @@
 	<button id="tankTheme">Tank</button>
 </div>
 
-<canvas id="ctx" width="700" height="500" style="border:1px solid #000000;"></canvas>
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
 <canvas id="worldMap" width="5000" height="5000" style="display:none;"></canvas>
 
 <script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
@@ -11,7 +11,7 @@
 	var WORLD_WIDTH = 1000;
 	var WORLD_HEIGHT = 1000;
 	var MAP_WRAP_NUMBER = 1;
-	var VIEW_WIDTH = 700;
+	var VIEW_WIDTH = 500;
 	var VIEW_HEIGHT = 500;
 	var PLAYER_SIZE = 50;
 	
@@ -24,11 +24,11 @@
 	
 	var Img = {};
 	Img.player = new Image();
-	Img.bullet = new Image();
+	Img.projectile = new Image();
 	Img.map = new Image();
 	Img.bground = new Image();
 	Img.player.src = '/client/img/Tank/player.png';
-	Img.bullet.src = '/client/img/Tank/bullet.png';
+	Img.projectile.src = '/client/img/Tank/bullet.png';
 	Img.map.src = '/client/img/Tank/map.png';
 	Img.bground.src = '/client/img/Tank/bground.png';
 	
@@ -36,7 +36,7 @@
 	/*
 	tankTheme.onclick = function() {
 		Img.player.src = '/client/img/tank/player.png';
-		Img.bullet.src = '/client/img/tank/bullet.png';
+		Img.projectile.src = '/client/img/tank/bullet.png';
 		Img.map.src = '/client/img/tank/map.png';
 	}
 	*/
@@ -71,10 +71,10 @@
 		var pCenterX = 0.0;
 		var pCenterY = 0.0;
 		
-		for(var i = 0; i < data.length; i++) {
-			if(data[i].id == clientId) {
-				playerX = data[i].x;
-				playerY = data[i].y;
+		for(var i = 0; i < data.player.length; i++) {
+			if(data.player[i].id == clientId) {
+				playerX = data.player[i].x;
+				playerY = data.player[i].y;
 				pCenterX = playerX + PLAYER_SIZE/2;
 				pCenterY = playerY + PLAYER_SIZE/2;
 				clipX = pCenterX - VIEW_WIDTH/2;
@@ -84,15 +84,19 @@
 			}
 		}
 
-		for(var i = 0; i < data.length; i++) {
-			if(data[i].id == clientId) {
+		for(var i = 0; i < data.player.length; i++) {
+			if(data.player[i].id == clientId) {
 				ctx.drawImage(Img.player, (VIEW_WIDTH - PLAYER_SIZE)/2, (VIEW_HEIGHT - PLAYER_SIZE)/2, PLAYER_SIZE, PLAYER_SIZE);
 			}
-			else if(Math.abs(pCenterX - data[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data[i].y) < VIEW_HEIGHT) {
-				var otherX = data[i].x - pCenterX + VIEW_WIDTH/2;
-				var otherY = data[i].y - pCenterY + VIEW_HEIGHT/2;
+			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT) {
+				var otherX = data.player[i].x - pCenterX + VIEW_WIDTH/2;
+				var otherY = data.player[i].y - pCenterY + VIEW_HEIGHT/2;
 				ctx.drawImage(Img.player, otherX, otherY, PLAYER_SIZE, PLAYER_SIZE);
 			}
+		}
+		
+		for(var i = 0; i < data.projectile.length; i++) {
+			ctx.drawImage(Img.projectile, data.projectile[i].x, data.projectile[i].y, 10, 10);
 		}
 	});
 	
@@ -127,4 +131,16 @@
 			socket.emit('keyPress',{inputId:'up', state:false});
 		}
 	}
+	
+	document.onclick = function(event){
+		socket.emit('keyPress',{inputId:'attack',state:true});
+	}
+	
+	document.onmousemove = function(event){
+		var x = (-VIEW_WIDTH/2) + event.clientX;
+		var y = (-VIEW_HEIGHT/2) + event.clientY;
+		var angle = Math.atan2(y,x) / Math.PI * 180;
+		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+	}
+	
 </script>

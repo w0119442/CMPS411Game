@@ -11,7 +11,6 @@ serv.listen(2000);
 console.log("Server started.");
 
 var SOCKET_LIST = {};
-var PLAYER_LIST = {};
 
 var WORLD_WIDTH = 500;
 var WINDOW_HEIGHT = 500;
@@ -20,7 +19,10 @@ var PLAYER_SIZE = 50;
 
 // ******** GAME LOOP **********************************
 setInterval(function() {
-	var playPackage = Player.update();
+	var playPackage = {
+		player:Player.update(),
+		projectile:Projectile.update(),
+	}
 	
 	for(var i in SOCKET_LIST) {
 		var socket = SOCKET_LIST[i];
@@ -48,18 +50,11 @@ io.sockets.on('connection', function(socket) {
 // ******** PARENT OBJECT *******************************
 var Entity = function() {
 	var self = {
-		x:0,
-		y:0,
+		x:250,
+		y:250,
 		spdX:0,
 		spdY:0,
 		id:"",
-	}
-	self.update = function(){
-		self.updatePosition();
-	}
-	self.updatePosition = function(){
-		self.x += self.spdX;
-		self.y += self.spdY;
 	}
 	return self;
 }
@@ -75,6 +70,8 @@ var Player = function(id) {
 	self.pressRight = false;
 	self.pressDown = false;
 	self.pressUp = false;
+	self.firing = false;
+	self.mouseAngle = 0;
 	self.playerSpeed = 5;
 	
 	self.updatePosition = function() {
@@ -90,6 +87,15 @@ var Player = function(id) {
 		else if(self.pressUp && self.y - self.playerSpeed > 0) {
 			self.y -= self.playerSpeed;
 		}
+		if(self.firing){
+			self.shootProjectile(self.mouseAngle);
+		}
+		self.firing = false;
+	}
+	self.shootProjectile = function(angle){
+		var projectile = Projectile(angle);
+		projectile.x = self.x;
+		projectile.y = self.y;
 	}
 	Player.list[id] = self;
 	return self;
@@ -109,6 +115,13 @@ Player.onConnect = function(socket){
 		}
 		else if(data.inputId == 'up') {
 			player.pressUp = data.state;
+		}
+		
+		if(data.inputId == 'attack'){
+			player.firing = data.state;
+		}
+		if(data.inputId == 'mouseAngle'){
+				player.mouseAngle = data.state;
 		}
 	});
 }
@@ -130,5 +143,41 @@ Player.update = function(){
 	return playPackage;
 }
 
-// ******** BULLET MODULE ******************************
+// ******** PROJECTILE MODULE ****************************
+var Projectile = function(angle){
+	var self = Entity();
+	self.id = Math.random();
+	self.spdX = Math.cos(angle/180*Math.PI) * 10;
+	self.spdY = Math.sin(angle/180*Math.PI) * 10;	
+	self.timer = 0;
+	self.toRemove = false;
+	self.updatePosition = function() {
+		self.x += self.spdX;
+		self.y += self.spdY;
+		if(self.timer++ > 100){
+			self.toRemove = true;
+		}
+	}
+	Projectile.list[self.id] = self;
+	return self;
+}
+Projectile.list = {};
+Projectile.update = function(){
+	
+	var playPackage = [];
+	for(var i in Projectile.list) {
+		var projectile = Projectile.list[i];
+		projectile.updatePosition();
+		playPackage.push({
+			x:projectile.x,
+			y:projectile.y,
+		});
+	}
+	return playPackage;
+}
+
+
+
+
+
 
