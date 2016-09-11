@@ -83,6 +83,13 @@
 				ctx.drawImage(worldMapCanvas, clipX, clipY, VIEW_WIDTH, VIEW_HEIGHT, 0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 			}
 		}
+		
+		for(var i = 0; i < data.projectile.length; i++) {
+			var projX = data.projectile[i].x - pCenterX + VIEW_WIDTH/2;
+			var projY = data.projectile[i].y - pCenterY + VIEW_HEIGHT/2;
+			ctx.drawImage(Img.projectile, projX, projY, 10, 10);
+//			ctx.drawImage(Img.projectile, data.projectile[i].x, data.projectile[i].y, 10, 10);
+		}
 
 		for(var i = 0; i < data.player.length; i++) {
 			if(data.player[i].id == clientId) {
@@ -93,10 +100,6 @@
 				var otherY = data.player[i].y - pCenterY + VIEW_HEIGHT/2;
 				ctx.drawImage(Img.player, otherX, otherY, PLAYER_SIZE, PLAYER_SIZE);
 			}
-		}
-		
-		for(var i = 0; i < data.projectile.length; i++) {
-			ctx.drawImage(Img.projectile, data.projectile[i].x, data.projectile[i].y, 10, 10);
 		}
 	});
 	

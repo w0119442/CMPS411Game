@@ -94,8 +94,10 @@ var Player = function(id) {
 	}
 	self.shootProjectile = function(angle){
 		var projectile = Projectile(angle);
-		projectile.x = self.x;
-		projectile.y = self.y;
+//		projectile.x = self.x;
+//		projectile.y = self.y;
+		projectile.x = self.x + PLAYER_SIZE/2;
+		projectile.y = self.y + PLAYER_SIZE/2;
 	}
 	Player.list[id] = self;
 	return self;
