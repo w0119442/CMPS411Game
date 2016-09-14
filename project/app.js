@@ -72,30 +72,54 @@ var Player = function(id) {
 	self.pressUp = false;
 	self.firing = false;
 	self.mouseAngle = 0;
+	self.turnAngle = 0;
 	self.playerSpeed = 5;
 	
 	self.updatePosition = function() {
 		if(self.pressLeft && self.x - self.playerSpeed > 0) {
 			self.x -= self.playerSpeed;
+			if(self.pressUp) {
+				self.turnAngle = -45;
+			}
+			else if(self.pressDown) {
+				self.turnAngle = -135;
+			}
+			else {
+				self.turnAngle = -90;	
+			}
 		}
 		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
 			self.x += self.playerSpeed;
+			if(self.pressUp) {
+				self.turnAngle = 45;
+			}
+			else if(self.pressDown) {
+				self.turnAngle = 135;
+			}
+			else {
+				self.turnAngle = 90;	
+			}
 		}		
 		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
 			self.y += self.playerSpeed;
+			if(!self.pressLeft && !self.pressRight) {
+				self.turnAngle = 180;	
+			}
 		}
 		else if(self.pressUp && self.y - self.playerSpeed > 0) {
 			self.y -= self.playerSpeed;
+			if(!self.pressLeft && !self.pressRight) {
+				self.turnAngle = 0;	
+			}
 		}
 		if(self.firing){
-			self.shootProjectile(self.mouseAngle);
+			self.shootProjectile(self.mouseAngle, self.id);
+			self.turnAngle = self.mouseAngle + 90;
 		}
 		self.firing = false;
 	}
-	self.shootProjectile = function(angle){
-		var projectile = Projectile(angle);
-//		projectile.x = self.x;
-//		projectile.y = self.y;
+	self.shootProjectile = function(angle, id){
+		var projectile = Projectile(angle, id);
 		projectile.x = self.x + PLAYER_SIZE/2;
 		projectile.y = self.y + PLAYER_SIZE/2;
 	}
@@ -139,6 +163,7 @@ Player.update = function(){
 			x:player.x,
 			y:player.y,
 			id:player.id,
+			turnAngle:player.turnAngle,
 			speed:player.maxSpeed,
 		});
 	}
@@ -146,9 +171,10 @@ Player.update = function(){
 }
 
 // ******** PROJECTILE MODULE ****************************
-var Projectile = function(angle){
+var Projectile = function(angle, id){
 	var self = Entity();
 	self.id = Math.random();
+	self.parentId = id;
 	self.spdX = Math.cos(angle/180*Math.PI) * 10;
 	self.spdY = Math.sin(angle/180*Math.PI) * 10;	
 	self.timer = 0;
