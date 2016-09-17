@@ -16,6 +16,7 @@ var WORLD_WIDTH = 500;
 var WINDOW_HEIGHT = 500;
 var MAP_SIZE = 1000;
 var PLAYER_SIZE = 50;
+var PLAYER_RADIUS = PLAYER_SIZE/2;
 
 // ******** GAME LOOP **********************************
 setInterval(function() {
@@ -56,6 +57,10 @@ var Entity = function() {
 		spdY:0,
 		id:"",
 	}
+	self.getDistance = function(pt){
+		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2));
+	}
+	
 	return self;
 }
 
@@ -118,8 +123,8 @@ var Player = function(id) {
 		}
 		self.firing = false;
 	}
-	self.shootProjectile = function(angle, id){
-		var projectile = Projectile(angle, id);
+	self.shootProjectile = function(angle, shooterId){
+		var projectile = Projectile(angle, shooterId);
 		projectile.x = self.x + PLAYER_SIZE/2;
 		projectile.y = self.y + PLAYER_SIZE/2;
 	}
@@ -171,19 +176,28 @@ Player.update = function(){
 }
 
 // ******** PROJECTILE MODULE ****************************
-var Projectile = function(angle, id){
+var Projectile = function(angle, shooterId){
 	var self = Entity();
 	self.id = Math.random();
-	self.parentId = id;
+	self.shooterId = shooterId;
 	self.spdX = Math.cos(angle/180*Math.PI) * 10;
 	self.spdY = Math.sin(angle/180*Math.PI) * 10;	
 	self.timer = 0;
 	self.toRemove = false;
 	self.updatePosition = function() {
-		self.x += self.spdX;
-		self.y += self.spdY;
 		if(self.timer++ > 100){
 			self.toRemove = true;
+		}
+		else{
+			self.x += self.spdX;
+			self.y += self.spdY;
+			for(var i in Player.list){
+				var p = Player.list[i];
+				if(self.getDistance(p) < PLAYER_RADIUS && self.shooterId !== p.id){
+					//collision detected
+					self.toRemove = true;
+				}
+			}
 		}
 	}
 	Projectile.list[self.id] = self;
@@ -191,15 +205,18 @@ var Projectile = function(angle, id){
 }
 Projectile.list = {};
 Projectile.update = function(){
-	
 	var playPackage = [];
 	for(var i in Projectile.list) {
 		var projectile = Projectile.list[i];
 		projectile.updatePosition();
-		playPackage.push({
-			x:projectile.x,
-			y:projectile.y,
-		});
+		if(projectile.toRemove){
+			delete Projectile.list[i];
+		}else{
+			playPackage.push({
+				x:projectile.x,
+				y:projectile.y,
+			});
+		}
 	}
 	return playPackage;
 }
