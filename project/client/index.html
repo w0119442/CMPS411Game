@@ -1,18 +1,26 @@
-<div id="themeDiv">
-	<button id="tankTheme">Tank</button>
-</div>
-
-<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
-<canvas id="worldMap" width="5000" height="5000" style="display:none;"></canvas>
-
-<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
+<html>
+<head>
+	<link rel="stylesheet" href="canvasStyle.css">
+</head>
+<body>
+	<div id="themeDiv">
+		<button id="tankTheme">Tank</button>
+	</div>
+	
+	<canvas id="ctx" ></canvas>
+	<canvas id="worldMap" width="5000" height="5000" style="display:none;"></canvas>
+	
+	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
+</body>
 
 <script>
+	var clientWidth = window.innerWidth;
+	var clientHeight = window.innerHeight;
 	var WORLD_WIDTH = 1000;
 	var WORLD_HEIGHT = 1000;
 	var MAP_WRAP_NUMBER = 1;
-	var VIEW_WIDTH = 500;
-	var VIEW_HEIGHT = 500;
+	var VIEW_WIDTH = clientWidth * .5;
+	var VIEW_HEIGHT = clientHeight * .5;
 	var PLAYER_SIZE = 50;
 	
 	var PLAYER_LIST = {};
@@ -52,6 +60,11 @@
 	
 	// game area
 	var ctx = document.getElementById("ctx").getContext("2d");
+	ctx.canvas.width = VIEW_WIDTH;
+	ctx.canvas.height = VIEW_HEIGHT;
+	// These next two lines were an attempt to center the viewPort in the browser (not working)
+	//ctx.canvas.style.top = (clientHeight-VIEW_HEIGHT)/2+"px";
+	//ctx.canvas.style.left = (clientWidth-VIEW_WIDTH)/2+"px";
 	ctx.font = '30px Arial';
 	
 	var clientId = null;
@@ -144,10 +157,11 @@
 	}
 	
 	document.onmousemove = function(event){
-		var x = (-VIEW_WIDTH/2 + PLAYER_SIZE/2) + event.clientX;
-		var y = (-VIEW_HEIGHT/2 + PLAYER_SIZE/2) + event.clientY;
+		var x = event.clientX - VIEW_WIDTH/2;
+		var y = event.clientY - VIEW_HEIGHT/2;
 		var angle = Math.atan2(y,x) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
 	
 </script>
+</html>
