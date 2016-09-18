@@ -150,10 +150,18 @@ Player.onConnect = function(socket){
 		else if(data.inputId == 'up') {
 			player.pressUp = data.state;
 		}
+		if(data.inputId == 'lostFocus'){
+				player.pressUp = false;
+				player.pressDown = false;
+				player.pressRight = false;
+				player.pressLeft = false;
+				console.log("lost focus");
+		}
 		
 		if(data.inputId == 'attack'){
 			player.firing = data.state;
 		}
+
 		if(data.inputId == 'mouseAngle'){
 				player.mouseAngle = data.state;
 		}
