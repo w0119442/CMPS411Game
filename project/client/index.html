@@ -19,8 +19,8 @@
 	var WORLD_WIDTH = 1000;
 	var WORLD_HEIGHT = 1000;
 	var MAP_WRAP_NUMBER = 1;
-	var VIEW_WIDTH = clientWidth * .5;
-	var VIEW_HEIGHT = clientHeight * .5;
+	var VIEW_WIDTH = clientWidth * .9;
+	var VIEW_HEIGHT = clientHeight * .9;
 	var PLAYER_SIZE = 50;
 	
 	var PLAYER_LIST = {};
@@ -98,8 +98,8 @@
 		}
 		
 		for(var i = 0; i < data.projectile.length; i++) {
-			var projX = data.projectile[i].x - pCenterX + VIEW_WIDTH/2;
-			var projY = data.projectile[i].y - pCenterY + VIEW_HEIGHT/2;
+			var projX = data.projectile[i].x - pCenterX + VIEW_WIDTH/2 -5;
+			var projY = data.projectile[i].y - pCenterY + VIEW_HEIGHT/2 -5;
 			ctx.drawImage(Img.projectile, projX, projY, 10, 10);
 		}
 
@@ -157,10 +157,11 @@
 	}
 	
 	document.onmousemove = function(event){
-		var x = event.clientX - VIEW_WIDTH/2;
-		var y = event.clientY - VIEW_HEIGHT/2;
+		var x = event.clientX - (VIEW_WIDTH/2 + ctx.canvas.offsetLeft);
+		var y = event.clientY - (VIEW_HEIGHT/2 + ctx.canvas.offsetTop);
 		var angle = Math.atan2(y,x) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+
 	}
 	
 </script>

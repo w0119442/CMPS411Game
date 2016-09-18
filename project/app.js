@@ -56,9 +56,11 @@ var Entity = function() {
 		spdX:0,
 		spdY:0,
 		id:"",
+		size:""
 	}
 	self.getDistance = function(pt){
-		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2));
+		return Math.sqrt(Math.pow(self.x-pt.x-pt.size/2,2) + Math.pow(self.y-pt.y-pt.size/2,2)); 
+		
 	}
 	
 	return self;
@@ -79,6 +81,7 @@ var Player = function(id) {
 	self.mouseAngle = 0;
 	self.turnAngle = 0;
 	self.playerSpeed = 5;
+	self.size = 50;
 	
 	self.updatePosition = function() {
 		if(self.pressLeft && self.x - self.playerSpeed > 0) {
@@ -184,6 +187,7 @@ var Projectile = function(angle, shooterId){
 	self.spdY = Math.sin(angle/180*Math.PI) * 10;	
 	self.timer = 0;
 	self.toRemove = false;
+	self.size = 10;
 	self.updatePosition = function() {
 		if(self.timer++ > 100){
 			self.toRemove = true;
