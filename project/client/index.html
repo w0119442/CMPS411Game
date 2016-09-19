@@ -8,7 +8,7 @@
 	</div>
 	
 	<canvas id="ctx" ></canvas>
-	<canvas id="worldMap" width="5000" height="5000" style="display:none;"></canvas>
+	<canvas id="worldMap" width="1000" height="1000" style="display:none;"></canvas>
 	
 	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
 </body>
@@ -115,7 +115,12 @@
 			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT) {
 				var otherX = data.player[i].x - pCenterX + VIEW_WIDTH/2;
 				var otherY = data.player[i].y - pCenterY + VIEW_HEIGHT/2;
-				ctx.drawImage(Img.player, otherX, otherY, PLAYER_SIZE, PLAYER_SIZE);
+				ctx.save()
+				ctx.translate(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2);
+				ctx.rotate(data.player[i].turnAngle * Math.PI/180);
+				ctx.drawImage(Img.player, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
+				ctx.restore();
+//				ctx.drawImage(Img.player, otherX, otherY, PLAYER_SIZE, PLAYER_SIZE);
 			}
 		}
 	});

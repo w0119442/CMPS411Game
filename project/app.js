@@ -83,6 +83,32 @@ var Player = function(id) {
 	self.playerSpeed = 5;
 	self.size = 50;
 	
+	// This updatePosition rotates a fixed player position toward the mouse
+	/*
+	self.updatePosition = function() {
+		if(self.pressLeft && self.x - self.playerSpeed > 0) {
+			self.x -= self.playerSpeed;
+		}
+		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
+			self.x += self.playerSpeed;
+		}		
+		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
+			self.y += self.playerSpeed;
+		}
+		else if(self.pressUp && self.y - self.playerSpeed > 0) {
+			self.y -= self.playerSpeed;
+		}
+		if(self.firing){
+			self.shootProjectile(self.mouseAngle, self.id);
+			self.turnAngle = self.mouseAngle + 90;
+		}
+		self.firing = false;
+	}
+	*/
+	
+	// The below updatePosition turns the image to 45 degree increments
+	// depending on the arrow key direction. Then the tank quickly turns
+	// to shoot the bullet. Kind of weird and jerky.
 	self.updatePosition = function() {
 		if(self.pressLeft && self.x - self.playerSpeed > 0) {
 			self.x -= self.playerSpeed;
@@ -126,6 +152,7 @@ var Player = function(id) {
 		}
 		self.firing = false;
 	}
+	
 	self.shootProjectile = function(angle, shooterId){
 		var projectile = Projectile(angle, shooterId);
 		projectile.x = self.x + PLAYER_SIZE/2;
