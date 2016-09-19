@@ -159,10 +159,18 @@
 	
 	document.onclick = function(event){
 		socket.emit('keyPress',{inputId:'attack',state:true});
+		
+		var x = event.clientX - (VIEW_WIDTH/2 + ctx.canvas.offsetLeft);
+		var y = event.clientY - (VIEW_HEIGHT/2 + ctx.canvas.offsetTop);
+		var angle = Math.atan2(y,x) / Math.PI * 180;
+		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
 	document.onblur = function(event){
 		socket.emit('keyPress',{inputId:'lostFocus',state:true});
 	}
+	
+	/*
+	//Put this under onclick so the server won't keep track of each mouse position
 	document.onmousemove = function(event){
 		var x = event.clientX - (VIEW_WIDTH/2 + ctx.canvas.offsetLeft);
 		var y = event.clientY - (VIEW_HEIGHT/2 + ctx.canvas.offsetTop);
@@ -170,6 +178,7 @@
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 
 	}
+	*/
 	
 </script>
 </html>

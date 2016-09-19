@@ -12,9 +12,8 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 
-var WORLD_WIDTH = 500;
-var WINDOW_HEIGHT = 500;
 var MAP_SIZE = 1000;
+var WINDOW_HEIGHT = 500;
 var PLAYER_SIZE = 50;
 var PLAYER_RADIUS = PLAYER_SIZE/2;
 
@@ -83,34 +82,8 @@ var Player = function(id) {
 	self.playerSpeed = 5;
 	self.size = 50;
 	
-	// This updatePosition rotates a fixed player position toward the mouse
-	/*
 	self.updatePosition = function() {
-		if(self.pressLeft && self.x - self.playerSpeed > 0) {
-			self.x -= self.playerSpeed;
-		}
-		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
-			self.x += self.playerSpeed;
-		}		
-		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
-			self.y += self.playerSpeed;
-		}
-		else if(self.pressUp && self.y - self.playerSpeed > 0) {
-			self.y -= self.playerSpeed;
-		}
-		if(self.firing){
-			self.shootProjectile(self.mouseAngle, self.id);
-			self.turnAngle = self.mouseAngle + 90;
-		}
-		self.firing = false;
-	}
-	*/
-	
-	// The below updatePosition turns the image to 45 degree increments
-	// depending on the arrow key direction. Then the tank quickly turns
-	// to shoot the bullet. Kind of weird and jerky.
-	self.updatePosition = function() {
-		if(self.pressLeft && self.x - self.playerSpeed > 0) {
+		if(self.pressLeft && self.x - self.playerSpeed > 0 && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
 			self.x -= self.playerSpeed;
 			if(self.pressUp) {
 				self.turnAngle = -45;
@@ -122,7 +95,7 @@ var Player = function(id) {
 				self.turnAngle = -90;	
 			}
 		}
-		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
+		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
 			self.x += self.playerSpeed;
 			if(self.pressUp) {
 				self.turnAngle = 45;
@@ -134,13 +107,13 @@ var Player = function(id) {
 				self.turnAngle = 90;	
 			}
 		}		
-		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE) {
+		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x, self.y + self.playerSpeed, self.id)) {
 			self.y += self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
 				self.turnAngle = 180;	
 			}
 		}
-		else if(self.pressUp && self.y - self.playerSpeed > 0) {
+		else if(self.pressUp && self.y - self.playerSpeed > 0 && !Player.playerCollision(self.x, self.y - self.playerSpeed, self.id)) {
 			self.y -= self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
 				self.turnAngle = 0;	
@@ -178,11 +151,11 @@ Player.onConnect = function(socket){
 			player.pressUp = data.state;
 		}
 		if(data.inputId == 'lostFocus'){
-				player.pressUp = false;
-				player.pressDown = false;
-				player.pressRight = false;
-				player.pressLeft = false;
-				console.log("lost focus");
+			player.pressUp = false;
+			player.pressDown = false;
+			player.pressRight = false;
+			player.pressLeft = false;
+			console.log("lost focus");
 		}
 		
 		if(data.inputId == 'attack'){
@@ -190,13 +163,35 @@ Player.onConnect = function(socket){
 		}
 
 		if(data.inputId == 'mouseAngle'){
-				player.mouseAngle = data.state;
+			player.mouseAngle = data.state;
 		}
 	});
 }
+
+Player.playerCollision = function(playerX, playerY, playerId) {
+	var playCollide = false;
+	var playCenterX = playerX + PLAYER_RADIUS;
+	var playCenterY = playerY + PLAYER_RADIUS;
+
+	for(var i in Player.list) {
+		if(playerId != Player.list[i].id) {
+			var centerX = Player.list[i].x + PLAYER_RADIUS;
+			var centerY = Player.list[i].y + PLAYER_RADIUS;
+		
+			if(Math.abs(playCenterX - centerX) < PLAYER_SIZE && Math.abs(playCenterY - centerY) < PLAYER_SIZE){
+				//collision between players detected
+				playCollide = true;
+			}	
+		}
+	}
+	
+	return playCollide;
+}
+
 Player.onDisconnect = function(socket){
 	delete Player.list[socket.id];
 }
+
 Player.update = function(){
 	var playPackage = [];
 	for(var i in Player.list) {
@@ -225,6 +220,12 @@ var Projectile = function(angle, shooterId){
 	self.size = 10;
 	self.updatePosition = function() {
 		if(self.timer++ > 100){
+			self.toRemove = true;
+		}
+		else if(self.x + self.spdX < 0 || self.x + self.spdX > MAP_SIZE) {
+			self.toRemove = true;
+		}
+		else if(self.y + self.spdY < 0 || self.y + self.spdY > MAP_SIZE) {
 			self.toRemove = true;
 		}
 		else{
