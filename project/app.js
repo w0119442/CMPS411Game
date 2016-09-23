@@ -70,8 +70,8 @@ var Entity = function() {
 var Player = function(id) {
 	var self = Entity();
 	self.id = id;
-	self.x = Math.floor((MAP_SIZE - PLAYER_SIZE - BORDER_SIZE) * Math.random());
-	self.y = Math.floor((MAP_SIZE - PLAYER_SIZE - BORDER_SIZE) * Math.random());
+	self.x = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
+	self.y = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
 	self.number = "" + Math.floor(10 * Math.random());
 	self.pressLeft = false;
 	self.pressRight = false;
@@ -80,6 +80,7 @@ var Player = function(id) {
 	self.firing = false;
 	self.mouseAngle = 0;
 	self.turnAngle = 0;
+	self.directAngle = 0;
 	self.playerSpeed = 5;
 	self.size = 50;
 	
@@ -87,42 +88,42 @@ var Player = function(id) {
 		if(self.pressLeft && self.x - self.playerSpeed > BORDER_SIZE && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
 			self.x -= self.playerSpeed;
 			if(self.pressUp) {
-				self.turnAngle = -45;
+				self.directAngle = -45;
 			}
 			else if(self.pressDown) {
-				self.turnAngle = -135;
+				self.directAngle = -135;
 			}
 			else {
-				self.turnAngle = -90;	
+				self.directAngle = -90;	
 			}
 		}
 		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE - BORDER_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
 			self.x += self.playerSpeed;
 			if(self.pressUp) {
-				self.turnAngle = 45;
+				self.directAngle = 45;
 			}
 			else if(self.pressDown) {
-				self.turnAngle = 135;
+				self.directAngle = 135;
 			}
 			else {
-				self.turnAngle = 90;	
+				self.directAngle = 90;	
 			}
 		}		
 		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE - BORDER_SIZE && !Player.playerCollision(self.x, self.y + self.playerSpeed, self.id)) {
 			self.y += self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
-				self.turnAngle = 180;	
+				self.directAngle = 180;	
 			}
 		}
 		else if(self.pressUp && self.y - self.playerSpeed > BORDER_SIZE && !Player.playerCollision(self.x, self.y - self.playerSpeed, self.id)) {
 			self.y -= self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
-				self.turnAngle = 0;	
+				self.directAngle = 0;	
 			}
 		}
 		if(self.firing){
 			self.shootProjectile(self.mouseAngle, self.id);
-			self.turnAngle = self.mouseAngle + 90;
+			self.turnAngle = self.mouseAngle;
 		}
 		self.firing = false;
 	}
@@ -203,6 +204,7 @@ Player.update = function(){
 			y:player.y,
 			id:player.id,
 			turnAngle:player.turnAngle,
+			directAngle:player.directAngle,
 			speed:player.maxSpeed,
 		});
 	}
@@ -223,10 +225,10 @@ var Projectile = function(angle, shooterId){
 		if(self.timer++ > 100){
 			self.toRemove = true;
 		}
-		else if(self.x + self.spdX < 0 || self.x + self.spdX > MAP_SIZE) {
+		else if(self.x + self.spdX < BORDER_SIZE || self.x + self.spdX > MAP_SIZE - BORDER_SIZE) {
 			self.toRemove = true;
 		}
-		else if(self.y + self.spdY < 0 || self.y + self.spdY > MAP_SIZE) {
+		else if(self.y + self.spdY < BORDER_SIZE || self.y + self.spdY > MAP_SIZE - BORDER_SIZE) {
 			self.toRemove = true;
 		}
 		else{
