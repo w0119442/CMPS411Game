@@ -1,14 +1,14 @@
 <html>
 <head>
-	<link rel="stylesheet" href="canvasStyle.css">
+<!--	<link rel="stylesheet" type="text/css" href="canvasStyle.css" /> -->
 </head>
 <body>
 	<div id="themeDiv">
 		<button id="tankTheme">Tank</button>
 	</div>
 	
-	<canvas id="ctx" ></canvas>
-	<canvas id="worldMap" width="1000" height="1000" style="display:none;"></canvas>
+	<canvas id="ctx"></canvas>
+	<canvas id="worldMap" width="3000" height="3000" style="display:none;"></canvas>
 	
 	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
 </body>
@@ -18,9 +18,10 @@
 	var clientHeight = window.innerHeight;
 	var WORLD_WIDTH = 1000;
 	var WORLD_HEIGHT = 1000;
-	var MAP_WRAP_NUMBER = 1;
-	var VIEW_WIDTH = clientWidth * .9;
-	var VIEW_HEIGHT = clientHeight * .9;
+	var MAP_WRAP_NUMBER = 3;
+	var BORDER_SIZE = 32;
+	var VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
+	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
 	var PLAYER_SIZE = 50;
 	
 	var PLAYER_LIST = {};
@@ -34,11 +35,13 @@
 	Img.player = new Image();
 	Img.projectile = new Image();
 	Img.map = new Image();
-	Img.bground = new Image();
+//	Img.bground = new Image();
+	Img.bgtile = new Image();
 	Img.player.src = '/client/img/Tank/player.png';
 	Img.projectile.src = '/client/img/Tank/bullet.png';
 	Img.map.src = '/client/img/Tank/map.png';
-	Img.bground.src = '/client/img/Tank/bground.png';
+//	Img.bground.src = '/client/img/Tank/bground.png';
+	Img.bgtile.src = '/client/img/Tank/bgtile.png';
 	
 	<!--
 	/*
@@ -62,6 +65,11 @@
 	var ctx = document.getElementById("ctx").getContext("2d");
 	ctx.canvas.width = VIEW_WIDTH;
 	ctx.canvas.height = VIEW_HEIGHT;
+	Img.bgtile.onload = function() {
+		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
+		ctx.fillStyle = patrnBack;
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	}
 	// These next two lines were an attempt to center the viewPort in the browser (not working)
 	//ctx.canvas.style.top = (clientHeight-VIEW_HEIGHT)/2+"px";
 	//ctx.canvas.style.left = (clientWidth-VIEW_WIDTH)/2+"px";
@@ -77,23 +85,51 @@
 	
 	socket.on('newPositions',function(data) {
 		ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
-		ctx.drawImage(Img.bground, 0, 0, VIEW_WIDTH, VIEW_HEIGHT);
-		
-		var playerX = 0.0;
-		var playerY = 0.0;
-		var pCenterX = 0.0;
-		var pCenterY = 0.0;
+		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
+		ctx.fillStyle = patrnBack;
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+//		ctx.drawImage(Img.bground, 0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 	
 		for(var i = 0; i < data.player.length; i++) {
 			if(data.player[i].id == clientId) {
-				playerX = data.player[i].x;
-				playerY = data.player[i].y;
-				pCenterX = playerX + PLAYER_SIZE/2;
-				pCenterY = playerY + PLAYER_SIZE/2;
-				clipX = pCenterX - VIEW_WIDTH/2;
-				clipY = pCenterY - VIEW_HEIGHT/2;
+				var playerX = data.player[i].x;
+				var playerY = data.player[i].y;
+				var pCenterX = playerX + PLAYER_SIZE/2;
+				var pCenterY = playerY + PLAYER_SIZE/2;
+				var xPosImage = 0.0;
+				var yPosImage = 0.0;
+				var clipX = pCenterX - VIEW_WIDTH/2;
+				var clipY = pCenterY - VIEW_HEIGHT/2;
+				var pOffsetX = VIEW_WIDTH/2;
+				var pOffsetY = VIEW_HEIGHT/2;
+				
+				if(pCenterX  < VIEW_WIDTH/2) {
+					clipX = 0;
+					pOffsetX = pCenterX;
+					xPosImage = Math.min(32, Math.abs(VIEW_WIDTH/2 - pCenterX));
+				}
+				else if(pCenterX  > WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH/2) {
+					var borderSpot = WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH/2;
+					clipX = WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH + Math.min(32, Math.abs(borderSpot - pCenterX));
+					pOffsetX = VIEW_WIDTH - (WORLD_WIDTH * MAP_WRAP_NUMBER - pCenterX);
+					xPosImage = 0;
+				}
+				
+				if(pCenterY  < VIEW_HEIGHT/2) {
+					clipY = 0;
+					pOffsetY = pCenterY;
+					yPosImage = Math.min(32, Math.abs(VIEW_HEIGHT/2 - pCenterY));
+				}
+				else if(pCenterY  > WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT/2) {
+					var borderSpot = WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT/2;
+					clipY = WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT + Math.min(32, Math.abs(borderSpot - pCenterY));
+					pOffsetY = VIEW_HEIGHT - (WORLD_HEIGHT * MAP_WRAP_NUMBER - pCenterY);
+					yPosImage = 0;
+				}
+
 				//drawImage(image, clipX, clipY, clipWidth, clipHeight, xPos, yPos, imageWidth, imageHeight)
-				ctx.drawImage(worldMapCanvas, clipX, clipY, VIEW_WIDTH, VIEW_HEIGHT, 0, 0, VIEW_WIDTH, VIEW_HEIGHT);
+				ctx.drawImage(worldMapCanvas, clipX, clipY, VIEW_WIDTH, VIEW_HEIGHT, xPosImage, yPosImage, VIEW_WIDTH, VIEW_HEIGHT);
+				break;
 			}
 		}
 		
@@ -107,7 +143,8 @@
 			if(data.player[i].id == clientId) {
 				ctx.save();
 //				ctx.drawImage(Img.player, (VIEW_WIDTH - PLAYER_SIZE)/2, (VIEW_HEIGHT - PLAYER_SIZE)/2, PLAYER_SIZE, PLAYER_SIZE);
-				ctx.translate(VIEW_WIDTH/2, VIEW_HEIGHT/2);
+//				ctx.translate(VIEW_WIDTH/2, VIEW_HEIGHT/2);
+				ctx.translate(pOffsetX, pOffsetY);
 				ctx.rotate(data.player[i].turnAngle * Math.PI/180);
 				ctx.drawImage(Img.player, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
 				ctx.restore();

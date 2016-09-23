@@ -12,10 +12,11 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 
-var MAP_SIZE = 1000;
+var MAP_SIZE = 3000;
 var WINDOW_HEIGHT = 500;
 var PLAYER_SIZE = 50;
 var PLAYER_RADIUS = PLAYER_SIZE/2;
+var BORDER_SIZE = 32;
 
 // ******** GAME LOOP **********************************
 setInterval(function() {
@@ -69,8 +70,8 @@ var Entity = function() {
 var Player = function(id) {
 	var self = Entity();
 	self.id = id;
-	self.x = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
-	self.y = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
+	self.x = Math.floor((MAP_SIZE - PLAYER_SIZE - BORDER_SIZE) * Math.random());
+	self.y = Math.floor((MAP_SIZE - PLAYER_SIZE - BORDER_SIZE) * Math.random());
 	self.number = "" + Math.floor(10 * Math.random());
 	self.pressLeft = false;
 	self.pressRight = false;
@@ -83,7 +84,7 @@ var Player = function(id) {
 	self.size = 50;
 	
 	self.updatePosition = function() {
-		if(self.pressLeft && self.x - self.playerSpeed > 0 && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
+		if(self.pressLeft && self.x - self.playerSpeed > BORDER_SIZE && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
 			self.x -= self.playerSpeed;
 			if(self.pressUp) {
 				self.turnAngle = -45;
@@ -95,7 +96,7 @@ var Player = function(id) {
 				self.turnAngle = -90;	
 			}
 		}
-		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
+		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE - BORDER_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
 			self.x += self.playerSpeed;
 			if(self.pressUp) {
 				self.turnAngle = 45;
@@ -107,13 +108,13 @@ var Player = function(id) {
 				self.turnAngle = 90;	
 			}
 		}		
-		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x, self.y + self.playerSpeed, self.id)) {
+		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE - BORDER_SIZE && !Player.playerCollision(self.x, self.y + self.playerSpeed, self.id)) {
 			self.y += self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
 				self.turnAngle = 180;	
 			}
 		}
-		else if(self.pressUp && self.y - self.playerSpeed > 0 && !Player.playerCollision(self.x, self.y - self.playerSpeed, self.id)) {
+		else if(self.pressUp && self.y - self.playerSpeed > BORDER_SIZE && !Player.playerCollision(self.x, self.y - self.playerSpeed, self.id)) {
 			self.y -= self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
 				self.turnAngle = 0;	
