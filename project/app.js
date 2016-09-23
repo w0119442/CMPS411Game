@@ -25,10 +25,12 @@ setInterval(function() {
 		projectile:Projectile.update(),
 	}
 	
-	for(var i in SOCKET_LIST) {
+/*	for(var i in SOCKET_LIST) {
 		var socket = SOCKET_LIST[i];
 		socket.emit('newPositions', playPackage);
-	}
+	}*/
+
+	io.emit('newPositions', playPackage);
 }, 1000/25);
 
 // ******** SOCKET MODULE ******************************
@@ -123,8 +125,9 @@ var Player = function(id) {
 		}
 		if(self.firing){
 			self.shootProjectile(self.mouseAngle, self.id);
-			self.turnAngle = self.mouseAngle;
+			
 		}
+		self.turnAngle = self.mouseAngle;
 		self.firing = false;
 	}
 	
@@ -157,7 +160,6 @@ Player.onConnect = function(socket){
 			player.pressDown = false;
 			player.pressRight = false;
 			player.pressLeft = false;
-			console.log("lost focus");
 		}
 		
 		if(data.inputId == 'attack'){
