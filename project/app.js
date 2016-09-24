@@ -61,8 +61,7 @@ var Entity = function() {
 		size:""
 	}
 	self.getDistance = function(pt){
-		return Math.sqrt(Math.pow(self.x-pt.x-pt.size/2,2) + Math.pow(self.y-pt.y-pt.size/2,2)); 
-		
+		return Math.sqrt(Math.pow(self.x-pt.x-pt.size/2,2) + Math.pow(self.y-pt.y-pt.size/2,2)); 		
 	}
 	
 	return self;
@@ -84,6 +83,7 @@ var Player = function(id) {
 	self.turnAngle = 0;
 	self.directAngle = 0;
 	self.playerSpeed = 5;
+	self.hp = 3;
 	self.size = 50;
 	
 	self.updatePosition = function() {
@@ -208,6 +208,7 @@ Player.update = function(){
 			turnAngle:player.turnAngle,
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,
+			hp:player.hp,
 		});
 	}
 	return playPackage;

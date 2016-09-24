@@ -31,6 +31,7 @@ button {
 	var VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
 	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
 	var PLAYER_SIZE = 50;
+	var HP = 3;
 	
 	var PLAYER_LIST = {};
 	var socket = io();
@@ -45,11 +46,14 @@ button {
 	Img.projectile = new Image();
 	Img.map = new Image();
 	Img.bgtile = new Image();
+	
+	// Default tank theme
 	Img.playerTop.src = '/client/img/Tank/playerTop.png';
 	Img.playerBase.src = '/client/img/Tank/playerBase.png';
 	Img.projectile.src = '/client/img/Tank/bullet.png';
 	Img.map.src = '/client/img/Tank/map.png';
 	Img.bgtile.src = '/client/img/Tank/bgtile.png';
+	var hpColor = "#00ff99";
 	
 	<!--
 	/*
@@ -147,15 +151,26 @@ button {
 		for(var i = 0; i < data.projectile.length; i++) {
 			var projX = data.projectile[i].x - pCenterX + pOffsetX - 5;
 			var projY = data.projectile[i].y - pCenterY + pOffsetY - 5;
-//			var projX = data.projectile[i].x - pCenterX + VIEW_WIDTH/2 - 5;
-//			var projY = data.projectile[i].y - pCenterY + VIEW_HEIGHT/2 - 5;
 			ctx.drawImage(Img.projectile, projX, projY, 10, 10);
 		}
 
 		for(var i = 0; i < data.player.length; i++) {
 			if(data.player[i].id == clientId) {
+				// Drawing an HP bar
+				var bottomX = pOffsetX - PLAYER_SIZE/2;
+				var bottomY = pOffsetY + PLAYER_SIZE/2;
+				var hpHeight = 7;
+				var hpWidth = Math.floor(PLAYER_SIZE/HP);
+				for(var j = 0; j < data.player[i].hp; j++) {
+					ctx.fillStyle = hpColor;
+					ctx.fillRect(bottomX + hpWidth * j, bottomY, hpWidth, hpHeight);
+					ctx.strokeStyle = "#000000";
+					ctx.lineWidth = 1;
+					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
+				}
+			
+				// Draw the player base and player top
 				ctx.save();
-//				ctx.drawImage(Img.player, (VIEW_WIDTH - PLAYER_SIZE)/2, (VIEW_HEIGHT - PLAYER_SIZE)/2, PLAYER_SIZE, PLAYER_SIZE);
 				ctx.translate(pOffsetX, pOffsetY);
 				ctx.rotate(data.player[i].directAngle * Math.PI/180);
 				ctx.drawImage(Img.playerBase, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
@@ -169,6 +184,21 @@ button {
 			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT) {
 				var otherX = data.player[i].x - pCenterX + pOffsetX;
 				var otherY = data.player[i].y - pCenterY + pOffsetY;
+				
+				// Drawing an HP bar
+				var bottomX = otherX;
+				var bottomY = otherY + PLAYER_SIZE;
+				var hpHeight = 7;
+				var hpWidth = Math.floor(PLAYER_SIZE/HP);
+				for(var j = 0; j < data.player[i].hp; j++) {
+					ctx.fillStyle = hpColor;
+					ctx.fillRect(bottomX + hpWidth * j, bottomY, hpWidth, hpHeight);
+					ctx.strokeStyle = "#000000";
+					ctx.lineWidth = 1;
+					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
+				}
+				
+				// Draw player base and player top
 				ctx.save()
 				ctx.translate(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2);
 				ctx.rotate(data.player[i].directAngle * Math.PI/180);
