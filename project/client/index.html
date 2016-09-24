@@ -100,6 +100,7 @@ button {
 	var pOffsetY = 0.0;
 	
 	socket.on('newPositions',function(data) {
+
 		ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
 		ctx.fillStyle = patrnBack;
@@ -155,7 +156,7 @@ button {
 		}
 
 		for(var i = 0; i < data.player.length; i++) {
-			if(data.player[i].id == clientId) {
+			if(data.player[i].id == clientId && data.player[i].alive) {
 				// Drawing an HP bar
 				var bottomX = pOffsetX - PLAYER_SIZE/2;
 				var bottomY = pOffsetY + PLAYER_SIZE/2;
@@ -168,6 +169,10 @@ button {
 					ctx.lineWidth = 1;
 					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
 				}
+				
+				// Draw kill count (temp / test)
+				var killCount = ""+data.player[i].playerKills;
+				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
 			
 				// Draw the player base and player top
 				ctx.save();
@@ -177,11 +182,11 @@ button {
 				ctx.restore();
 				ctx.save();
 				ctx.translate(pOffsetX, pOffsetY);
-				ctx.rotate((data.player[i].turnAngle + 90)* Math.PI/180);
+				ctx.rotate((data.player[i].mouseAngle + 90)* Math.PI/180);
 				ctx.drawImage(Img.playerTop, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
 				ctx.restore();
 			}
-			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT) {
+			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT && data.player[i].alive) {
 				var otherX = data.player[i].x - pCenterX + pOffsetX;
 				var otherY = data.player[i].y - pCenterY + pOffsetY;
 				
@@ -198,6 +203,10 @@ button {
 					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
 				}
 				
+				// Draw kill count (temp / test)
+				var killCount = ""+data.player[i].playerKills;
+				ctx.fillText(killCount, otherX + 25, otherY - 5);
+				
 				// Draw player base and player top
 				ctx.save()
 				ctx.translate(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2);
@@ -206,7 +215,7 @@ button {
 				ctx.restore();
 				ctx.save();
 				ctx.translate(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2);
-				ctx.rotate((data.player[i].turnAngle + 90)* Math.PI/180);
+				ctx.rotate((data.player[i].mouseAngle + 90)* Math.PI/180);
 				ctx.drawImage(Img.playerTop, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
 				ctx.restore();
 

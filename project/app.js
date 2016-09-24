@@ -24,11 +24,6 @@ setInterval(function() {
 		player:Player.update(),
 		projectile:Projectile.update(),
 	}
-	
-/*	for(var i in SOCKET_LIST) {
-		var socket = SOCKET_LIST[i];
-		socket.emit('newPositions', playPackage);
-	}*/
 
 	io.emit('newPositions', playPackage);
 }, 1000/25);
@@ -61,7 +56,7 @@ var Entity = function() {
 		size:""
 	}
 	self.getDistance = function(pt){
-		return Math.sqrt(Math.pow(self.x-pt.x-pt.size/2,2) + Math.pow(self.y-pt.y-pt.size/2,2)); 		
+		return Math.sqrt(Math.pow(self.x - pt.x - pt.size / 2, 2) + Math.pow(self.y - pt.y - pt.size / 2, 2)); 		
 	}
 	
 	return self;
@@ -80,11 +75,21 @@ var Player = function(id) {
 	self.pressUp = false;
 	self.firing = false;
 	self.mouseAngle = 0;
-	self.turnAngle = 0;
 	self.directAngle = 0;
 	self.playerSpeed = 5;
+	self.alive = true;
 	self.hp = 3;
+	self.deathTimer = 0;
+	self.playerKills = 0;
 	self.size = 50;
+	
+	self.respawn = function(){
+		self.alive = true;
+		self.hp = 3;
+		self.deathTimer = 0;
+		self.x = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
+		self.y = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
+	}
 	
 	self.updatePosition = function() {
 		if(self.pressLeft && self.x - self.playerSpeed > BORDER_SIZE && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
@@ -127,7 +132,6 @@ var Player = function(id) {
 			self.shootProjectile(self.mouseAngle, self.id);
 			
 		}
-		self.turnAngle = self.mouseAngle;
 		self.firing = false;
 	}
 	
@@ -171,7 +175,9 @@ Player.onConnect = function(socket){
 		}
 	});
 }
-
+Player.onDisconnect = function(socket){
+	delete Player.list[socket.id];
+}
 Player.playerCollision = function(playerX, playerY, playerId) {
 	var playCollide = false;
 	var playCenterX = playerX + PLAYER_RADIUS;
@@ -191,24 +197,30 @@ Player.playerCollision = function(playerX, playerY, playerId) {
 	
 	return playCollide;
 }
-
-Player.onDisconnect = function(socket){
-	delete Player.list[socket.id];
-}
-
 Player.update = function(){
 	var playPackage = [];
 	for(var i in Player.list) {
 		var player = Player.list[i];
-		player.updatePosition();
+		if (player.hp < 1){
+			if (player.deathTimer++ > 100){
+				player.respawn();
+			}else{
+				player.alive = false;
+			}
+		}
+		else{
+			player.updatePosition();
+		}
 		playPackage.push({
 			x:player.x,
 			y:player.y,
 			id:player.id,
-			turnAngle:player.turnAngle,
+			mouseAngle:player.mouseAngle,
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,
 			hp:player.hp,
+			alive:player.alive,
+			playerKills:player.playerKills,
 		});
 	}
 	return playPackage;
@@ -239,8 +251,16 @@ var Projectile = function(angle, shooterId){
 			self.y += self.spdY;
 			for(var i in Player.list){
 				var p = Player.list[i];
-				if(self.getDistance(p) < PLAYER_RADIUS && self.shooterId !== p.id){
+				if(self.getDistance(p) < PLAYER_RADIUS && p.alive && self.shooterId !== p.id){
 					//collision detected
+					p.hp--;
+					if (p.hp < 1){
+						for(var j in Player.list){
+							if(Player.list[j].id == self.shooterId){
+								Player.list[j].playerKills++;
+							}
+						}
+					}
 					self.toRemove = true;
 				}
 			}
@@ -257,7 +277,8 @@ Projectile.update = function(){
 		projectile.updatePosition();
 		if(projectile.toRemove){
 			delete Projectile.list[i];
-		}else{
+		}
+		else{
 			playPackage.push({
 				x:projectile.x,
 				y:projectile.y,
