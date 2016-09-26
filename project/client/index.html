@@ -20,18 +20,21 @@ button {
 </body>
 
 <script>
-	var clientWidth = window.innerWidth;
-	var clientHeight = window.innerHeight;
+
 	var BUTTON_HEIGHT = 35;
 	var WORLD_WIDTH = 1000;
 	var WORLD_HEIGHT = 1000;
 	var MAP_WRAP_NUMBER = 3;
 	var BORDER_SIZE = 32;
-	// Alter Viewport so the border fits nicely
-	var VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
-	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
 	var PLAYER_SIZE = 50;
 	var HP = 3;
+	
+	// Alter Viewport so the border fits nicely
+	window.addEventListener("resize", resizeFunction);
+	var clientWidth = window.innerWidth;
+	var clientHeight = window.innerHeight;
+	var VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
+	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
 	
 	var PLAYER_LIST = {};
 	var socket = io();
@@ -85,6 +88,19 @@ button {
 	//ctx.canvas.style.top = (clientHeight-VIEW_HEIGHT)/2+"px";
 	//ctx.canvas.style.left = (clientWidth-VIEW_WIDTH)/2+"px";
 	ctx.font = '30px Arial';
+	
+	// On screen resize, variables are recomputed
+	function resizeFunction() {
+		clientWidth = window.innerWidth;
+		clientHeight = window.innerHeight;
+		VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
+		VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
+		ctx.canvas.width = VIEW_WIDTH;
+		ctx.canvas.height = VIEW_HEIGHT;
+		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
+		ctx.fillStyle = patrnBack;
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	}
 	
 	var clientId = null;
 	
@@ -267,7 +283,6 @@ button {
 		var y = event.clientY - (pOffsetY + ctx.canvas.offsetTop);
 		var angle = Math.atan2(y,x) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
-
 	}
 	
 </script>
