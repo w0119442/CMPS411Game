@@ -121,25 +121,25 @@ button {
 				
 				if(pCenterX  < VIEW_WIDTH/2) {
 					clipX = 0;
-					pOffsetX = pCenterX;
-					xPosImage = Math.min(32, Math.abs(VIEW_WIDTH/2 - pCenterX));
+					xPosImage = Math.min(BORDER_SIZE, Math.abs(VIEW_WIDTH/2 - pCenterX));
+					pOffsetX = pCenterX + xPosImage;
 				}
 				else if(pCenterX  > WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH/2) {
 					var borderSpot = WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH/2;
-					clipX = WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH + Math.min(32, Math.abs(borderSpot - pCenterX));
-					pOffsetX = VIEW_WIDTH - (WORLD_WIDTH * MAP_WRAP_NUMBER - pCenterX);
+					clipX = WORLD_WIDTH * MAP_WRAP_NUMBER - VIEW_WIDTH + Math.min(BORDER_SIZE, Math.abs(borderSpot - pCenterX));
+					pOffsetX = VIEW_WIDTH - (WORLD_WIDTH * MAP_WRAP_NUMBER - pCenterX) - Math.min(BORDER_SIZE, Math.abs(borderSpot - pCenterX));
 					xPosImage = 0;
 				}
 				
 				if(pCenterY  < VIEW_HEIGHT/2) {
 					clipY = 0;
-					pOffsetY = pCenterY;
-					yPosImage = Math.min(32, Math.abs(VIEW_HEIGHT/2 - pCenterY));
+					yPosImage = Math.min(32, Math.abs(VIEW_HEIGHT/2 - pCenterY));					
+					pOffsetY = pCenterY + yPosImage;
 				}
 				else if(pCenterY  > WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT/2) {
 					var borderSpot = WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT/2;
-					clipY = WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT + Math.min(32, Math.abs(borderSpot - pCenterY));
-					pOffsetY = VIEW_HEIGHT - (WORLD_HEIGHT * MAP_WRAP_NUMBER - pCenterY);
+					clipY = WORLD_HEIGHT * MAP_WRAP_NUMBER - VIEW_HEIGHT + Math.min(BORDER_SIZE, Math.abs(borderSpot - pCenterY));
+					pOffsetY = VIEW_HEIGHT - (WORLD_HEIGHT * MAP_WRAP_NUMBER - pCenterY) - Math.min(BORDER_SIZE, Math.abs(borderSpot - pCenterY));
 					yPosImage = 0;
 				}
 
