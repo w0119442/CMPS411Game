@@ -16,6 +16,7 @@ var MAP_SIZE = 3000;
 var WINDOW_HEIGHT = 500;
 var PLAYER_SIZE = 50;
 var PLAYER_RADIUS = PLAYER_SIZE/2;
+var NUM_PLAYERS = 0;
 
 // ******** GAME LOOP **********************************
 setInterval(function() {
@@ -67,7 +68,8 @@ var Player = function(id) {
 	self.id = id;
 	self.x = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
 	self.y = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
-	self.number = "" + Math.floor(10 * Math.random());
+	//self.team = Math.floor(10 * Math.random()) % 2;
+	self.team = NUM_PLAYERS % 2;
 	self.pressLeft = false;
 	self.pressRight = false;
 	self.pressDown = false;
@@ -81,6 +83,8 @@ var Player = function(id) {
 	self.deathTimer = 0;
 	self.playerKills = 0;
 	self.size = 50;
+	
+	console.log("team " + self.team);
 	
 	self.respawn = function(){
 		self.alive = true;
@@ -142,9 +146,12 @@ var Player = function(id) {
 	Player.list[id] = self;
 	return self;
 }
+
 Player.list = {};
+
 Player.onConnect = function(socket){
 	var player = Player(socket.id);
+	NUM_PLAYERS++;
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
 			player.pressLeft = data.state;
@@ -176,6 +183,7 @@ Player.onConnect = function(socket){
 }
 Player.onDisconnect = function(socket){
 	delete Player.list[socket.id];
+	NUM_PLAYERS--;
 }
 
 Player.playerCollision = function(playerX, playerY, playerId) {
@@ -220,6 +228,7 @@ Player.update = function(){
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,
 			hp:player.hp,
+			team:player.team,
 			alive:player.alive,
 			playerKills:player.playerKills,
 		});

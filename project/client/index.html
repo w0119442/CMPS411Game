@@ -1,13 +1,40 @@
+<!DOCTYPE html>
 <html>
 <head>
-<!--	<link rel="stylesheet" type="text/css" href="canvasStyle.css" /> -->
+<!--	<link rel="stylesheet" type="text/css" href="buttonStyles.css" /> -->
+</head>
+
 <style>
 button {
-	width: 60px;
+	border: none;
+	min-width: 60px;
 	height: 30px;
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+	border-radius: 8px;
+	float: left
+}
+
+#tankTheme {
+	color: #6E2C00;
+	border: 2px solid #6E2C00;
+	background-color: #F8C471
+}
+
+#bookTheme {
+	color: #641E16;
+	border: 2px solid #641E16;
+	background-color: #F5B7B1
+}
+
+#spiderTheme {
+	color: #0B5345;
+	border: 2px solid #0B5345;
+	background-color: #A9DFBF
 }
 </style>
-</head>
+
 <body>
 	<div id="themeDiv">
 		<button id="tankTheme">Tank</button>
@@ -58,7 +85,8 @@ button {
 	Img.projectile.src = '/client/img/Tank/bullet.png';
 	Img.map.src = '/client/img/Tank/map.png';
 	Img.bgtile.src = '/client/img/Tank/bgtile.png';
-	var hpColor = "#00ff99";
+	var hpColorY = "#00ff99";
+	var hpColorN = "#ff0000";
 	
 	tankTheme.onclick = function() {
 		setTheme("Tank");
@@ -70,37 +98,7 @@ button {
 		setTheme("Spider");
 	}
 	
-	/*	
-	// Tank (desert) theme
-	tankTheme.onclick = function() {
-		Img.playerTop.src = '/client/img/Tank/playerTop.png';
-		Img.playerBase.src = '/client/img/Tank/playerBase.png';
-		Img.projectile.src = '/client/img/Tank/bullet.png';
-		Img.map.src = '/client/img/Tank/map.png';
-		Img.bgtile.src = '/client/img/Tank/bgtile.png';
-		var hpColor = "#00ff99";
-	}
-	
-	// Book (library) theme
-	bookTheme.onclick = function() {
-		Img.playerTop.src = '/client/img/Book/playerTop.png';
-		Img.playerBase.src = '/client/img/Book/playerBase.png';
-		Img.projectile.src = '/client/img/Book/bullet.png';
-		Img.map.src = '/client/img/Book/map.png';
-		Img.bgtile.src = '/client/img/Book/bgtile.png';
-		var hpColor = "#00ff99";	
-	}
-	
-	// Spider (forest) theme
-	spiderTheme.onclick = function() {
-		Img.playerTop.src = '/client/img/Spider/playerTop.png';
-		Img.playerBase.src = '/client/img/Spider/playerBase.png';
-		Img.projectile.src = '/client/img/Spider/bullet.png';
-		Img.map.src = '/client/img/Spider/map.png';
-		Img.bgtile.src = '/client/img/Spider/bgtile.png';
-		var hpColor = "#00ff99";
-	}*/
-	
+	// Set up world map
 	var worldMapCanvas = document.getElementById("worldMap");
 	var worldMap = worldMapCanvas.getContext("2d");
 	Img.map.onload = function() {
@@ -109,7 +107,7 @@ button {
 		worldMap.fillRect(0, 0, worldMapCanvas.width, worldMapCanvas.height);
 	}
 	
-	// game area
+	// Set up game area (viewport)
 	var ctx = document.getElementById("ctx").getContext("2d");
 	ctx.canvas.width = VIEW_WIDTH;
 	ctx.canvas.height = VIEW_HEIGHT;
@@ -143,6 +141,8 @@ button {
 		ctx.fillStyle = patrnBack;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	
+		var playerTeam = 0;
+	
 		for(var i = 0; i < data.player.length; i++) {
 			if(data.player[i].id == clientId) {
 				var playerX = data.player[i].x;
@@ -155,6 +155,7 @@ button {
 				pCenterY = playerY + PLAYER_SIZE/2;				
 				pOffsetX = VIEW_WIDTH/2;
 				pOffsetY = VIEW_HEIGHT/2;
+				playerTeam = data.player[i].team;
 				
 				if(pCenterX  < VIEW_WIDTH/2) {
 					clipX = 0;
@@ -194,18 +195,28 @@ button {
 
 		for(var i = 0; i < data.player.length; i++) {
 			if(data.player[i].id == clientId && data.player[i].alive) {
+				var bottomX = pOffsetX - PLAYER_SIZE/2;
+				var bottomY = pOffsetY + PLAYER_SIZE/2;
+				drawHP(bottomX, bottomY, playerTeam, data.player[i]);
+				
+				/*
 				// Drawing an HP bar
 				var bottomX = pOffsetX - PLAYER_SIZE/2;
 				var bottomY = pOffsetY + PLAYER_SIZE/2;
 				var hpHeight = 7;
 				var hpWidth = Math.floor(PLAYER_SIZE/HP);
 				for(var j = 0; j < data.player[i].hp; j++) {
-					ctx.fillStyle = hpColor;
+					if(data.player[i].team == playerTeam) {
+						ctx.fillStyle = hpColorY;
+					}
+					else {
+						ctx.fillStyle = hpColorN;
+					}
 					ctx.fillRect(bottomX + hpWidth * j, bottomY, hpWidth, hpHeight);
 					ctx.strokeStyle = "#000000";
 					ctx.lineWidth = 1;
 					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
-				}
+				}*/
 				
 				// Draw kill count (temp / test)
 				var killCount = ""+data.player[i].playerKills;
@@ -218,19 +229,26 @@ button {
 			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT && data.player[i].alive) {
 				var otherX = data.player[i].x - pCenterX + pOffsetX;
 				var otherY = data.player[i].y - pCenterY + pOffsetY;
-				
+				drawHP(otherX, otherY + PLAYER_SIZE, playerTeam, data.player[i]);
+
+				/*
 				// Drawing an HP bar
 				var bottomX = otherX;
 				var bottomY = otherY + PLAYER_SIZE;
 				var hpHeight = 7;
 				var hpWidth = Math.floor(PLAYER_SIZE/HP);
 				for(var j = 0; j < data.player[i].hp; j++) {
-					ctx.fillStyle = hpColor;
+					if(data.player[i].team == playerTeam) {
+						ctx.fillStyle = hpColorY;
+					}
+					else {
+						ctx.fillStyle = hpColorN;
+					}
 					ctx.fillRect(bottomX + hpWidth * j, bottomY, hpWidth, hpHeight);
 					ctx.strokeStyle = "#000000";
 					ctx.lineWidth = 1;
 					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
-				}
+				}*/
 				
 				// Draw kill count (temp / test)
 				var killCount = ""+data.player[i].playerKills;
@@ -299,6 +317,25 @@ button {
 		ctx.restore();	
 	}
 	
+	// Function for drawing the hp bar
+	function drawHP(botX, botY, team, p) {
+		var hpHeight = 7;
+		var hpWidth = Math.floor(PLAYER_SIZE/HP);
+
+		for(var j = 0; j < p.hp; j++) {
+			if(p.team == team) {
+				ctx.fillStyle = hpColorY;
+			}
+			else {
+				ctx.fillStyle = hpColorN;
+			}
+			ctx.fillRect(botX + hpWidth * j, botY, hpWidth, hpHeight);
+			ctx.strokeStyle = "#000000";
+			ctx.lineWidth = 1;
+			ctx.strokeRect(botX, botY, HP * hpWidth, hpHeight);
+		}
+	}
+	
 	// On screen resize, variables are recomputed
 	function resizeFunction() {
 		clientWidth = window.innerWidth;
@@ -319,7 +356,8 @@ button {
 		Img.projectile.src = "/client/img/" + theme + "/bullet.png";
 		Img.map.src = "/client/img/" + theme + "/map.png";
 		Img.bgtile.src = "/client/img/" + theme + "/bgtile.png";
-		var hpColor = "#00ff99";
+		hpColorY = "#00ff99";
+		hpColorN = "#ff0000";
 	}
 	
 </script>
