@@ -94,37 +94,37 @@ var Player = function(id) {
 		if(self.pressLeft && self.x - self.playerSpeed > 0 && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
 			self.x -= self.playerSpeed;
 			if(self.pressUp) {
-				self.directAngle = -45;
-			}
-			else if(self.pressDown) {
 				self.directAngle = -135;
-			}
-			else {
-				self.directAngle = -90;	
-			}
-		}
-		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
-			self.x += self.playerSpeed;		
-			if(self.pressUp) {
-				self.directAngle = 45;
 			}
 			else if(self.pressDown) {
 				self.directAngle = 135;
 			}
 			else {
-				self.directAngle = 90;		
+				self.directAngle = 180;
+			}
+		}
+		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
+			self.x += self.playerSpeed;		
+			if(self.pressUp) {
+				self.directAngle = -45;
+			}
+			else if(self.pressDown) {
+				self.directAngle = 45;
+			}
+			else {
+				self.directAngle = 0;		
 			}
 		}		
 		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x, self.y + self.playerSpeed, self.id)) {
 			self.y += self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
-				self.directAngle = 180;	
+				self.directAngle = 90;	
 			}
 		}
 		else if(self.pressUp && self.y - self.playerSpeed > 0 && !Player.playerCollision(self.x, self.y - self.playerSpeed, self.id)) {
 			self.y -= self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
-				self.directAngle = 0;				
+				self.directAngle = -90;				
 			}
 		}
 		if(self.firing){

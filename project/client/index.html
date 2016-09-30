@@ -3,14 +3,16 @@
 <!--	<link rel="stylesheet" type="text/css" href="canvasStyle.css" /> -->
 <style>
 button {
-	width: 50px;
-	height: 35px;
+	width: 60px;
+	height: 30px;
 }
 </style>
 </head>
 <body>
 	<div id="themeDiv">
 		<button id="tankTheme">Tank</button>
+		<button id="bookTheme">Book</button>
+		<button id="spiderTheme">Spider</button>
 	</div>
 	
 	<canvas id="ctx"></canvas>
@@ -50,32 +52,54 @@ button {
 	Img.map = new Image();
 	Img.bgtile = new Image();
 	
-	/*
-	// Default tank theme
+	// Set default theme to Tank 
 	Img.playerTop.src = '/client/img/Tank/playerTop.png';
 	Img.playerBase.src = '/client/img/Tank/playerBase.png';
 	Img.projectile.src = '/client/img/Tank/bullet.png';
 	Img.map.src = '/client/img/Tank/map.png';
 	Img.bgtile.src = '/client/img/Tank/bgtile.png';
 	var hpColor = "#00ff99";
-	*/
 	
-	// Book (Library) Theme
-	Img.playerTop.src = '/client/img/Book/playerTop.png';
-	Img.playerBase.src = '/client/img/Book/playerBase.png';
-	Img.projectile.src = '/client/img/Book/bullet.png';
-	Img.map.src = '/client/img/Book/map.png';
-	Img.bgtile.src = '/client/img/Book/bgtile.png';
-	var hpColor = "#00ff99";
-	
-	<!--
-	/*
 	tankTheme.onclick = function() {
-		Img.projectile.src = '/client/img/tank/bullet.png';
-		Img.map.src = '/client/img/tank/map.png';
+		setTheme("Tank");
 	}
-	*/
-	-->
+	bookTheme.onclick = function() {
+		setTheme("Book");
+	}
+	spiderTheme.onclick = function() {
+		setTheme("Spider");
+	}
+	
+	/*	
+	// Tank (desert) theme
+	tankTheme.onclick = function() {
+		Img.playerTop.src = '/client/img/Tank/playerTop.png';
+		Img.playerBase.src = '/client/img/Tank/playerBase.png';
+		Img.projectile.src = '/client/img/Tank/bullet.png';
+		Img.map.src = '/client/img/Tank/map.png';
+		Img.bgtile.src = '/client/img/Tank/bgtile.png';
+		var hpColor = "#00ff99";
+	}
+	
+	// Book (library) theme
+	bookTheme.onclick = function() {
+		Img.playerTop.src = '/client/img/Book/playerTop.png';
+		Img.playerBase.src = '/client/img/Book/playerBase.png';
+		Img.projectile.src = '/client/img/Book/bullet.png';
+		Img.map.src = '/client/img/Book/map.png';
+		Img.bgtile.src = '/client/img/Book/bgtile.png';
+		var hpColor = "#00ff99";	
+	}
+	
+	// Spider (forest) theme
+	spiderTheme.onclick = function() {
+		Img.playerTop.src = '/client/img/Spider/playerTop.png';
+		Img.playerBase.src = '/client/img/Spider/playerBase.png';
+		Img.projectile.src = '/client/img/Spider/bullet.png';
+		Img.map.src = '/client/img/Spider/map.png';
+		Img.bgtile.src = '/client/img/Spider/bgtile.png';
+		var hpColor = "#00ff99";
+	}*/
 	
 	var worldMapCanvas = document.getElementById("worldMap");
 	var worldMap = worldMapCanvas.getContext("2d");
@@ -89,6 +113,7 @@ button {
 	var ctx = document.getElementById("ctx").getContext("2d");
 	ctx.canvas.width = VIEW_WIDTH;
 	ctx.canvas.height = VIEW_HEIGHT;
+	ctx.font = '30px Arial';
 	Img.bgtile.onload = function() {
 		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
 		ctx.fillStyle = patrnBack;
@@ -97,20 +122,6 @@ button {
 	// These next two lines were an attempt to center the viewPort in the browser (not working)
 	//ctx.canvas.style.top = (clientHeight-VIEW_HEIGHT)/2+"px";
 	//ctx.canvas.style.left = (clientWidth-VIEW_WIDTH)/2+"px";
-	ctx.font = '30px Arial';
-	
-	// On screen resize, variables are recomputed
-	function resizeFunction() {
-		clientWidth = window.innerWidth;
-		clientHeight = window.innerHeight;
-		VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
-		VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
-		ctx.canvas.width = VIEW_WIDTH;
-		ctx.canvas.height = VIEW_HEIGHT;
-		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
-		ctx.fillStyle = patrnBack;
-		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	}
 	
 	var clientId = null;
 	
@@ -136,12 +147,12 @@ button {
 			if(data.player[i].id == clientId) {
 				var playerX = data.player[i].x;
 				var playerY = data.player[i].y;
-				pCenterX = playerX + PLAYER_SIZE/2;
-				pCenterY = playerY + PLAYER_SIZE/2;
 				var xPosImage = 0.0;
 				var yPosImage = 0.0;
 				var clipX = pCenterX - VIEW_WIDTH/2;
 				var clipY = pCenterY - VIEW_HEIGHT/2;
+				pCenterX = playerX + PLAYER_SIZE/2;
+				pCenterY = playerY + PLAYER_SIZE/2;				
 				pOffsetX = VIEW_WIDTH/2;
 				pOffsetY = VIEW_HEIGHT/2;
 				
@@ -201,16 +212,8 @@ button {
 				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
 			
 				// Draw the player base and player top
-				ctx.save();
-				ctx.translate(pOffsetX, pOffsetY);
-				ctx.rotate(data.player[i].directAngle * Math.PI/180);
-				ctx.drawImage(Img.playerBase, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
-				ctx.restore();
-				ctx.save();
-				ctx.translate(pOffsetX, pOffsetY);
-				ctx.rotate((data.player[i].mouseAngle + 90)* Math.PI/180);
-				ctx.drawImage(Img.playerTop, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
-				ctx.restore();
+				drawPlayer(pOffsetX, pOffsetY, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
+				drawPlayer(pOffsetX, pOffsetY, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);
 			}
 			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT && data.player[i].alive) {
 				var otherX = data.player[i].x - pCenterX + pOffsetX;
@@ -234,16 +237,8 @@ button {
 				ctx.fillText(killCount, otherX + 25, otherY - 5);
 				
 				// Draw player base and player top
-				ctx.save()
-				ctx.translate(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2);
-				ctx.rotate(data.player[i].directAngle * Math.PI/180);
-				ctx.drawImage(Img.playerBase, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
-				ctx.restore();
-				ctx.save();
-				ctx.translate(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2);
-				ctx.rotate((data.player[i].mouseAngle + 90)* Math.PI/180);
-				ctx.drawImage(Img.playerTop, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
-				ctx.restore();
+				drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
+				drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);
 
 			}
 		}
@@ -291,8 +286,40 @@ button {
 	ctx.canvas.onmousemove = function(event){
 		var x = event.clientX - (pOffsetX + ctx.canvas.offsetLeft);
 		var y = event.clientY - (pOffsetY + ctx.canvas.offsetTop);
-		var angle = Math.atan2(y,x) / Math.PI * 180;
+		var angle = Math.atan2(y,x)/ Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+	}
+	
+	// Function for drawing player images (base and top)
+	function drawPlayer(transX, transY, angle, pImage, pSize) {
+		ctx.save();
+		ctx.translate(transX, transY);
+		ctx.rotate((angle + 90) * Math.PI/180);
+		ctx.drawImage(pImage, -pSize/2, -pSize/2, pSize, pSize);
+		ctx.restore();	
+	}
+	
+	// On screen resize, variables are recomputed
+	function resizeFunction() {
+		clientWidth = window.innerWidth;
+		clientHeight = window.innerHeight;
+		VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
+		VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
+		ctx.canvas.width = VIEW_WIDTH;
+		ctx.canvas.height = VIEW_HEIGHT;
+		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
+		ctx.fillStyle = patrnBack;
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	}
+	
+	// Function that sets the theme based on the button clicked
+	function setTheme(theme) {
+		Img.playerTop.src = "/client/img/" + theme + "/playerTop.png";
+		Img.playerBase.src = "/client/img/" + theme + "/playerBase.png";
+		Img.projectile.src = "/client/img/" + theme + "/bullet.png";
+		Img.map.src = "/client/img/" + theme + "/map.png";
+		Img.bgtile.src = "/client/img/" + theme + "/bgtile.png";
+		var hpColor = "#00ff99";
 	}
 	
 </script>
