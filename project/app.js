@@ -6,6 +6,7 @@ app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/client',express.static(__dirname + '/client'));
+app.use('/css',express.static('client/css'));
 
 serv.listen(2000);
 console.log("Server started.");
@@ -192,7 +193,7 @@ Player.playerCollision = function(playerX, playerY, playerId) {
 	var playCenterY = playerY + PLAYER_RADIUS;
 
 	for(var i in Player.list) {
-		if(playerId != Player.list[i].id) {
+		if(playerId != Player.list[i].id && Player.list[playerId].team != Player.list[i].team) {
 			var centerX = Player.list[i].x + PLAYER_RADIUS;
 			var centerY = Player.list[i].y + PLAYER_RADIUS;
 		
@@ -261,7 +262,7 @@ var Projectile = function(angle, shooterId){
 			self.y += self.spdY;
 			for(var i in Player.list){
 				var p = Player.list[i];
-				if(self.getDistance(p) < PLAYER_RADIUS && p.alive && self.shooterId !== p.id){
+				if(self.getDistance(p) < PLAYER_RADIUS && p.alive && self.shooterId !== p.id && Player.list[shooterId].team != p.team){
 					//collision detected
 					p.hp--;
 					if (p.hp < 1){
