@@ -11,13 +11,13 @@ app.use('/css',express.static('client/css'));
 serv.listen(2000);
 console.log("Server started.");
 
-var SOCKET_LIST = {};
 
 var MAP_SIZE = 3000;
-var WINDOW_HEIGHT = 500;
 var PLAYER_SIZE = 50;
 var PLAYER_RADIUS = PLAYER_SIZE/2;
+
 var NUM_PLAYERS = 0;
+
 
 // ******** GAME LOOP **********************************
 setInterval(function() {
@@ -33,7 +33,6 @@ setInterval(function() {
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
 	socket.id = Math.random();
-	SOCKET_LIST[socket.id] = socket;
 	
 	socket.emit('init',{selfId:socket.id});
 	console.log("init " + socket.id);
@@ -41,7 +40,6 @@ io.sockets.on('connection', function(socket) {
 	Player.onConnect(socket);	
 		
 	socket.on('disconnect',function() {
-		delete SOCKET_LIST[socket.id];
 		Player.onDisconnect(socket);
 	});
 });
