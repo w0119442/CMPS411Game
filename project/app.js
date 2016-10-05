@@ -13,10 +13,8 @@ console.log("Server started.");
 
 
 var MAP_SIZE = 3000;
-var PLAYER_SIZE = 50;
-var PLAYER_RADIUS = PLAYER_SIZE/2;
 
-var NUM_PLAYERS = 0;
+var playerCount = 0;
 
 
 // ******** GAME LOOP **********************************
@@ -44,31 +42,12 @@ io.sockets.on('connection', function(socket) {
 	});
 });
 
-// ******** PARENT OBJECT *******************************
-var Entity = function() {
-	var self = {
-		x:250,
-		y:250,
-		spdX:0,
-		spdY:0,
-		id:"",
-		size:""
-	}
-	self.getDistance = function(pt){
-		return Math.sqrt(Math.pow(self.x - pt.x - pt.size / 2, 2) + Math.pow(self.y - pt.y - pt.size / 2, 2)); 		
-	}
-	
-	return self;
-}
 
 // ******** PLAYER MODULE ********************************
 var Player = function(id) {
-	var self = Entity();
+	var self = {};
 	self.id = id;
-	self.x = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
-	self.y = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
-	//self.team = Math.floor(10 * Math.random()) % 2;
-	self.team = NUM_PLAYERS % 2;
+	self.team = playerCount % 2;
 	self.pressLeft = false;
 	self.pressRight = false;
 	self.pressDown = false;
@@ -82,6 +61,9 @@ var Player = function(id) {
 	self.deathTimer = 0;
 	self.playerKills = 0;
 	self.size = 50;
+	self.radius = self.size / 2;
+	self.x = Math.floor((MAP_SIZE - self.size) * Math.random());
+	self.y = Math.floor((MAP_SIZE - self.size) * Math.random());
 	
 	console.log("team " + self.team);
 	
@@ -89,12 +71,12 @@ var Player = function(id) {
 		self.alive = true;
 		self.hp = 3;
 		self.deathTimer = 0;
-		self.x = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
-		self.y = Math.floor((MAP_SIZE - PLAYER_SIZE) * Math.random());
+		self.x = Math.floor((MAP_SIZE - self.size) * Math.random());
+		self.y = Math.floor((MAP_SIZE - self.size) * Math.random());
 	}
 	
 	self.updatePosition = function() {		
-		if(self.pressLeft && self.x - self.playerSpeed > 0 && !Player.playerCollision(self.x - self.playerSpeed, self.y, self.id)) {
+		if(self.pressLeft && self.x - self.playerSpeed > 0 && !self.playerCollision(self.x - self.playerSpeed, self.y)) {
 			self.x -= self.playerSpeed;
 			if(self.pressUp) {
 				self.directAngle = -135;
@@ -106,7 +88,7 @@ var Player = function(id) {
 				self.directAngle = 180;
 			}
 		}
-		else if(self.pressRight && self.x + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x + self.playerSpeed, self.y, self.id)) {
+		else if(self.pressRight && self.x + self.size + self.playerSpeed < MAP_SIZE && !self.playerCollision(self.x + self.playerSpeed, self.y)) {
 			self.x += self.playerSpeed;		
 			if(self.pressUp) {
 				self.directAngle = -45;
@@ -118,13 +100,13 @@ var Player = function(id) {
 				self.directAngle = 0;		
 			}
 		}		
-		if(self.pressDown && self.y + PLAYER_SIZE + self.playerSpeed < MAP_SIZE && !Player.playerCollision(self.x, self.y + self.playerSpeed, self.id)) {
+		if(self.pressDown && self.y + self.size + self.playerSpeed < MAP_SIZE && !self.playerCollision(self.x, self.y + self.playerSpeed)) {
 			self.y += self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
 				self.directAngle = 90;	
 			}
 		}
-		else if(self.pressUp && self.y - self.playerSpeed > 0 && !Player.playerCollision(self.x, self.y - self.playerSpeed, self.id)) {
+		else if(self.pressUp && self.y - self.playerSpeed > 0 && !self.playerCollision(self.x, self.y - self.playerSpeed)) {
 			self.y -= self.playerSpeed;
 			if(!self.pressLeft && !self.pressRight) {
 				self.directAngle = -90;				
@@ -137,10 +119,30 @@ var Player = function(id) {
 		self.firing = false;
 	}
 	
+	self.playerCollision = function(playerX, playerY) {
+	var playCollide = false;
+	var playCenterX = playerX + self.radius;
+	var playCenterY = playerY + self.radius;
+
+	for(var i in Player.list) {
+		if(Player.list[i].id != self.id && self.team != Player.list[i].team) {
+			var centerX = Player.list[i].x + self.radius;
+			var centerY = Player.list[i].y + self.radius;
+		
+			if(Math.abs(playCenterX - centerX) < self.size && Math.abs(playCenterY - centerY) < self.size){
+				//collision between players detected
+				playCollide = true;
+			}	
+		}
+	}
+	
+	return playCollide;
+}
+	
 	self.shootProjectile = function(angle, shooterId){
 		var projectile = Projectile(angle, shooterId);
-		projectile.x = self.x + PLAYER_SIZE/2;
-		projectile.y = self.y + PLAYER_SIZE/2;
+		projectile.x = self.x + self.radius;
+		projectile.y = self.y + self.radius;
 	}
 	Player.list[id] = self;
 	return self;
@@ -150,7 +152,7 @@ Player.list = {};
 
 Player.onConnect = function(socket){
 	var player = Player(socket.id);
-	NUM_PLAYERS++;
+	playerCount++;
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
 			player.pressLeft = data.state;
@@ -182,33 +184,12 @@ Player.onConnect = function(socket){
 }
 Player.onDisconnect = function(socket){
 	delete Player.list[socket.id];
-	NUM_PLAYERS--;
-}
-
-Player.playerCollision = function(playerX, playerY, playerId) {
-	var playCollide = false;
-	var playCenterX = playerX + PLAYER_RADIUS;
-	var playCenterY = playerY + PLAYER_RADIUS;
-
-	for(var i in Player.list) {
-		if(playerId != Player.list[i].id && Player.list[playerId].team != Player.list[i].team) {
-			var centerX = Player.list[i].x + PLAYER_RADIUS;
-			var centerY = Player.list[i].y + PLAYER_RADIUS;
-		
-			if(Math.abs(playCenterX - centerX) < PLAYER_SIZE && Math.abs(playCenterY - centerY) < PLAYER_SIZE){
-				//collision between players detected
-				playCollide = true;
-			}	
-		}
-	}
-	
-	return playCollide;
+	playerCount--;
 }
 
 Player.update = function(){
 	var playPackage = {};
 	for(var i in Player.list) {
-		console.log(i);
 		var player = Player.list[i];
 		if (player.hp < 1){
 			if (player.deathTimer++ > 100){
@@ -237,7 +218,7 @@ Player.update = function(){
 
 // ******** PROJECTILE MODULE ****************************
 var Projectile = function(angle, shooterId){
-	var self = Entity();
+	var self = {};
 	self.id = Math.random();
 	self.shooterId = shooterId;
 	self.spdX = Math.cos(angle/180*Math.PI) * 10;
@@ -259,11 +240,11 @@ var Projectile = function(angle, shooterId){
 			self.x += self.spdX;
 			self.y += self.spdY;
 			for(var i in Player.list){
-				var p = Player.list[i];
-				if(self.getDistance(p) < PLAYER_RADIUS && p.alive && self.shooterId !== p.id && Player.list[shooterId].team != p.team){
+				var player = Player.list[i];
+				if(self.getDistance(player) < player.radius && player.alive && self.shooterId !== player.id && Player.list[shooterId].team != player.team){
 					//collision detected
-					p.hp--;
-					if (p.hp < 1){
+					player.hp--;
+					if (player.hp < 1){
 						for(var j in Player.list){
 							if(Player.list[j].id == self.shooterId){
 								Player.list[j].playerKills++;
@@ -274,6 +255,9 @@ var Projectile = function(angle, shooterId){
 				}
 			}
 		}
+	}
+	self.getDistance = function(player){
+		return Math.sqrt(Math.pow(self.x - player.x - player.size / 2, 2) + Math.pow(self.y - player.y - player.size / 2, 2)); 		
 	}
 	Projectile.list[self.id] = self;
 	return self;
