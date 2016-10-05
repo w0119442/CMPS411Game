@@ -206,8 +206,9 @@ Player.playerCollision = function(playerX, playerY, playerId) {
 }
 
 Player.update = function(){
-	var playPackage = [];
+	var playPackage = {};
 	for(var i in Player.list) {
+		console.log(i);
 		var player = Player.list[i];
 		if (player.hp < 1){
 			if (player.deathTimer++ > 100){
@@ -219,10 +220,9 @@ Player.update = function(){
 		else{
 			player.updatePosition();
 		}
-		playPackage.push({
+		playPackage[i] ={
 			x:player.x,
 			y:player.y,
-			id:player.id,
 			mouseAngle:player.mouseAngle,
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,
@@ -230,7 +230,7 @@ Player.update = function(){
 			team:player.team,
 			alive:player.alive,
 			playerKills:player.playerKills,
-		});
+		};
 	}
 	return playPackage;
 }
