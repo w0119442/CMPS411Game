@@ -48,12 +48,25 @@
 	Img.map = new Image();
 	Img.bgtile = new Image();
 	
+	var Snd = {};
+	Snd.bmg = new Audio();
+	Snd.bmg.loop = true;
+	Snd.bmg.volume = 0.5;
+	Snd.shoot = new Audio();
+//	Snd.death = new Audio();
+	
 	// Set default theme to Tank 
-	Img.playerTop.src = '/client/img/Tank/playerTop.png';
-	Img.playerBase.src = '/client/img/Tank/playerBase.png';
-	Img.projectile.src = '/client/img/Tank/bullet.png';
-	Img.map.src = '/client/img/Tank/map.png';
-	Img.bgtile.src = '/client/img/Tank/bgtile.png';
+	Img.playerTop.src = '/client/theme/Tank/playerTop.png';
+	Img.playerBase.src = '/client/theme/Tank/playerBase.png';
+	Img.projectile.src = '/client/theme/Tank/bullet.png';
+	Img.map.src = '/client/theme/Tank/map.png';
+	Img.bgtile.src = '/client/theme/Tank/bgtile.png';
+	
+	Snd.bmg.src = '/client/theme/Tank/bgm.mp3';
+	Snd.bmg.play(); // play background music
+	Snd.shoot.src = '/client/theme/Tank/bullet.mp3';
+//	Snd.death.src = '/client/theme/Tank/death.mp3';
+	
 	var hpColorY = "#00ff99";
 	var hpColorN = "#ff0000";
 	
@@ -81,6 +94,7 @@
 	ctx.canvas.width = VIEW_WIDTH;
 	ctx.canvas.height = VIEW_HEIGHT;
 	ctx.font = '30px Arial';
+	
 	Img.bgtile.onload = function() {
 		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
 		ctx.fillStyle = patrnBack;
@@ -123,7 +137,6 @@
 		pOffsetX = VIEW_WIDTH/2;
 		pOffsetY = VIEW_HEIGHT/2;
 		
-		
 		if(pCenterX  < VIEW_WIDTH/2) {
 			clipX = 0;
 			xPosImage = Math.min(BORDER_SIZE, Math.abs(VIEW_WIDTH/2 - pCenterX));
@@ -150,9 +163,6 @@
 
 		//drawImage(image, clipX, clipY, clipWidth, clipHeight, xPos, yPos, imageWidth, imageHeight)
 		ctx.drawImage(worldMapCanvas, clipX, clipY, VIEW_WIDTH, VIEW_HEIGHT, xPosImage, yPosImage, VIEW_WIDTH, VIEW_HEIGHT);
-
-			
-		
 		
 		for(var i = 0; i < data.projectile.length; i++) {
 			var projX = data.projectile[i].x - pCenterX + pOffsetX - 5;
@@ -166,25 +176,6 @@
 				var bottomY = pOffsetY + PLAYER_SIZE/2;
 				drawHP(bottomX, bottomY, playerTeam, data.player[i]);
 				
-				/*
-				// Drawing an HP bar
-				var bottomX = pOffsetX - PLAYER_SIZE/2;
-				var bottomY = pOffsetY + PLAYER_SIZE/2;
-				var hpHeight = 7;
-				var hpWidth = Math.floor(PLAYER_SIZE/HP);
-				for(var j = 0; j < data.player[i].hp; j++) {
-					if(data.player[i].team == playerTeam) {
-						ctx.fillStyle = hpColorY;
-					}
-					else {
-						ctx.fillStyle = hpColorN;
-					}
-					ctx.fillRect(bottomX + hpWidth * j, bottomY, hpWidth, hpHeight);
-					ctx.strokeStyle = "#000000";
-					ctx.lineWidth = 1;
-					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
-				}*/
-				
 				// Draw kill count (temp / test)
 				var killCount = ""+data.player[i].playerKills;
 				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
@@ -197,25 +188,6 @@
 				var otherX = data.player[i].x - pCenterX + pOffsetX;
 				var otherY = data.player[i].y - pCenterY + pOffsetY;
 				drawHP(otherX, otherY + PLAYER_SIZE, playerTeam, data.player[i]);
-
-				/*
-				// Drawing an HP bar
-				var bottomX = otherX;
-				var bottomY = otherY + PLAYER_SIZE;
-				var hpHeight = 7;
-				var hpWidth = Math.floor(PLAYER_SIZE/HP);
-				for(var j = 0; j < data.player[i].hp; j++) {
-					if(data.player[i].team == playerTeam) {
-						ctx.fillStyle = hpColorY;
-					}
-					else {
-						ctx.fillStyle = hpColorN;
-					}
-					ctx.fillRect(bottomX + hpWidth * j, bottomY, hpWidth, hpHeight);
-					ctx.strokeStyle = "#000000";
-					ctx.lineWidth = 1;
-					ctx.strokeRect(bottomX, bottomY, HP * hpWidth, hpHeight);
-				}*/
 				
 				// Draw kill count (temp / test)
 				var killCount = ""+data.player[i].playerKills;
@@ -224,7 +196,6 @@
 				// Draw player base and player top
 				drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
 				drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);
-
 			}
 		}
 	});
@@ -263,6 +234,8 @@
 	
 	ctx.canvas.onclick = function(event){
 		socket.emit('keyPress',{inputId:'attack',state:true});
+		Snd.shoot.currentTime = 0;
+		Snd.shoot.play();
 	}
 	document.onblur = function(event){
 		socket.emit('keyPress',{inputId:'lostFocus',state:true});
@@ -311,6 +284,7 @@
 		VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
 		ctx.canvas.width = VIEW_WIDTH;
 		ctx.canvas.height = VIEW_HEIGHT;
+		ctx.font = '30px Arial';
 		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
 		ctx.fillStyle = patrnBack;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -318,11 +292,18 @@
 	
 	// Function that sets the theme based on the button clicked
 	function setTheme(theme) {
-		Img.playerTop.src = "/client/img/" + theme + "/playerTop.png";
-		Img.playerBase.src = "/client/img/" + theme + "/playerBase.png";
-		Img.projectile.src = "/client/img/" + theme + "/bullet.png";
-		Img.map.src = "/client/img/" + theme + "/map.png";
-		Img.bgtile.src = "/client/img/" + theme + "/bgtile.png";
+		Img.playerTop.src = "/client/theme/" + theme + "/playerTop.png";
+		Img.playerBase.src = "/client/theme/" + theme + "/playerBase.png";
+		Img.projectile.src = "/client/theme/" + theme + "/bullet.png";
+		Img.map.src = "/client/theme/" + theme + "/map.png";
+		Img.bgtile.src = "/client/theme/" + theme + "/bgtile.png";
+		Snd.bmg.src = "/client/theme/" + theme + "/bgm.mp3";
+		Snd.shoot.src = "/client/theme/" + theme + "/bullet.mp3";
+//		Snd.death.src = "/client/theme/" + theme + "/death.mp3";
+		Snd.bmg.load();
+		Snd.shoot.load();
+//		Snd.death.load();
+		Snd.bmg.play();
 		hpColorY = "#00ff99";
 		hpColorN = "#ff0000";
 	}
