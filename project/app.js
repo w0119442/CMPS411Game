@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 var listsRef = require("./lists");
+var globals = require("./globals");
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -12,8 +13,6 @@ app.use('/css',express.static('client/css'));
 serv.listen(2000);
 console.log("Server started.");
 
-
-var MAP_SIZE = 3000;
 var playerCount = 0;
 
 

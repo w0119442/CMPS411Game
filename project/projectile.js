@@ -1,6 +1,6 @@
 // projectile.js
 
-var MAP_SIZE = 3000;
+var globals = require("./globals");
 
 var listsRef = require("./lists");
 
@@ -22,10 +22,10 @@ var Player = playerRef.Player;
 			if(self.timer++ > 100){
 				self.toRemove = true;
 			}
-			else if(self.x + self.spdX < 0 || self.x + self.spdX > MAP_SIZE) {
+			else if(self.x + self.spdX < 0 || self.x + self.spdX > globals.MAP_SIZE) {
 				self.toRemove = true;
 			}
-			else if(self.y + self.spdY < 0 || self.y + self.spdY > MAP_SIZE) {
+			else if(self.y + self.spdY < 0 || self.y + self.spdY > globals.MAP_SIZE) {
 				self.toRemove = true;
 			}
 			else{
