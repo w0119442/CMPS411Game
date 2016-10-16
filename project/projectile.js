@@ -2,10 +2,11 @@
 
 var MAP_SIZE = 3000;
 
+var listsRef = require("./lists");
+
 var playerRef = require("./player");
 var Player = playerRef.Player;
 
-var listsRef = require("./lists");
 
 (function(){
 	var Projectile = function(angle, shooterId){
@@ -30,18 +31,13 @@ var listsRef = require("./lists");
 			else{
 				self.x += self.spdX;
 				self.y += self.spdY;
-				listsRef.playerList;
 				for(var i in listsRef.playerList){
 					var player = listsRef.playerList[i];
-					if(self.getDistance(player) < player.radius && player.alive && self.shooterId !== player.id && listsRef.playerList[shooterId].team != player.team){
+					if(self.getDistance(player) < player.radius && player.alive && self.shooterId !== player.id && listsRef.playerList[self.shooterId].team != player.team){
 						//collision detected
 						player.hp--;
 						if (player.hp < 1){
-							for(var j in listsRef.playerList){
-								if(listsRef.playerList[j].id == self.shooterId){
-									listsRef.playerList[j].playerKills++;
-								}
-							}
+							listsRef.playerList[self.shooterId].playerKills++;
 						}
 						self.toRemove = true;
 					}

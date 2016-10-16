@@ -53,7 +53,6 @@ Player.list = listsRef.playerList;
 Player.onConnect = function(socket){
 	playerCount++;
 	var player = Player(socket.id, playerCount);
-	//Player.list[player.id] = player;
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
 			player.pressLeft = data.state;
@@ -122,8 +121,9 @@ var projectileRef = require("./projectile");
 
 var Projectile = projectileRef.Projectile;
 
+Projectile.list = listsRef.projectileList;
+
 Projectile.update = function(){
-	Projectile.list = listsRef.projectileList;
 	var playPackage = [];
 	for(var i in Projectile.list) {
 		var projectile = Projectile.list[i];
