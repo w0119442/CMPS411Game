@@ -14,7 +14,7 @@
 	Snd.bgm.loop = true;
 	Snd.bgm.volume = 0.5;
 	Snd.shoot = new Audio();
-//	Snd.death = new Audio();
+	Snd.death = new Audio();
 	
 	// Set default theme to Tank 
 	Img.playerTop.src = '/client/theme/Tank/playerTop.png';
@@ -26,7 +26,7 @@
 	Snd.bgm.src = '/client/theme/Tank/bgm.mp3';
 	Snd.bgm.play(); // play background music
 	Snd.shoot.src = '/client/theme/Tank/bullet.mp3';
-//	Snd.death.src = '/client/theme/Tank/death.mp3';
+	Snd.death.src = '/client/theme/Tank/death.mp3';
 	
 	var hpColorY = "#00FF99";
 	var hpColorN = "#FF0000";
@@ -57,10 +57,10 @@
 		Img.bgtile.src = "/client/theme/" + theme + "/bgtile.png";
 		Snd.bgm.src = "/client/theme/" + theme + "/bgm.mp3";
 		Snd.shoot.src = "/client/theme/" + theme + "/bullet.mp3";
-//		Snd.death.src = "/client/theme/" + theme + "/death.mp3";
+		Snd.death.src = "/client/theme/" + theme + "/death.mp3";
 		Snd.bgm.load();
 		Snd.shoot.load();
-//		Snd.death.load();
+		Snd.death.load();
 		Snd.bgm.play();
 		
 		switch(theme)

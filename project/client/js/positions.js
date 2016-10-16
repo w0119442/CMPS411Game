@@ -1,7 +1,6 @@
-	var PLAYER_LIST = {};
 	var socket = io();
-	
 	var clientId = null;
+	var deathTimer = 0;
 	
 	socket.on('init',function(data) {
 		if(data.selfId) {
@@ -66,33 +65,43 @@
 			var projY = data.projectile[i].y - pCenterY + pOffsetY - 5;
 			ctx.drawImage(Img.projectile, projX, projY, 10, 10);
 		}
-
-		for(var i in data.player) {
+		
+		for(var i in data.player) {				
 			if(i == clientId && data.player[i].alive) {
 				var bottomX = pOffsetX - PLAYER_SIZE/2;
 				var bottomY = pOffsetY + PLAYER_SIZE/2;
 				drawHP(bottomX, bottomY, playerTeam, data.player[i]);
 				
 				// Draw kill count (temp / test)
-				var killCount = ""+data.player[i].playerKills;
+				var killCount = "" + data.player[i].playerKills;
 				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
 			
 				// Draw the player base and player top
 				drawPlayer(pOffsetX, pOffsetY, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
 				drawPlayer(pOffsetX, pOffsetY, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);
 			}
-			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT && data.player[i].alive) {
-				var otherX = data.player[i].x - pCenterX + pOffsetX;
-				var otherY = data.player[i].y - pCenterY + pOffsetY;
-				drawHP(otherX, otherY + PLAYER_SIZE, playerTeam, data.player[i]);
+			else if(Math.abs(pCenterX - data.player[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.player[i].y) < VIEW_HEIGHT) {
+				if(data.player[i].alive) {
+					var otherX = data.player[i].x - pCenterX + pOffsetX;
+					var otherY = data.player[i].y - pCenterY + pOffsetY;
+					drawHP(otherX, otherY + PLAYER_SIZE, playerTeam, data.player[i]);
 				
-				// Draw kill count (temp / test)
-				var killCount = ""+data.player[i].playerKills;
-				ctx.fillText(killCount, otherX + 25, otherY - 5);
+					// Draw kill count (temp / test)
+					var killCount = "" + data.player[i].playerKills;
+					ctx.fillText(killCount, otherX + 25, otherY - 5);
 				
-				// Draw player base and player top
-				drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
-				drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);
+					// Draw player base and player top
+					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
+					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);	
+					}
+				// ???????? We need a better way to detect a player's death ??????????
+				else if(!data.player[i].alive && deathTimer++ == 0) {
+					Snd.death.currentTime = 0;
+					Snd.death.play();
+					if(deathTimer >= 100) {
+						deathTimer = 0;
+					}
+				}
 			}
 		}
 	});

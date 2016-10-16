@@ -183,8 +183,8 @@ Player.onConnect = function(socket){
 	});
 }
 Player.onDisconnect = function(socket){
+	playerCount--;	
 	delete Player.list[socket.id];
-	playerCount--;
 }
 
 Player.update = function(){
