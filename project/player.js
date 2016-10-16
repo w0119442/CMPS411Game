@@ -1,17 +1,15 @@
 // player.js
 
 var globals = require("./globals");
-
 var listsRef = require("./lists");
-
 var projectileRef = require("./projectile");
 var Projectile = projectileRef.Projectile;
 
 (function(){
-	var Player = function(id, playerCount) {
+	var Player = function(id) {
 		var self = {};
 		self.id = id;
-		self.team = playerCount % 2;
+		self.team = listsRef.playerCount() % 2;
 		self.pressLeft = false;
 		self.pressRight = false;
 		self.pressDown = false;
@@ -114,6 +112,5 @@ var Projectile = projectileRef.Projectile;
 	}
 	
 	module.exports.Player = Player;
-
 
 }());

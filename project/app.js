@@ -13,8 +13,6 @@ app.use('/css',express.static('client/css'));
 serv.listen(2000);
 console.log("Server started.");
 
-var playerCount = 0;
-
 
 // ******** GAME LOOP **********************************
 setInterval(function() {
@@ -44,14 +42,11 @@ io.sockets.on('connection', function(socket) {
 
 // ******** PLAYER MODULE ********************************
 var playerRef = require("./player");
-
-var Player = playerRef.Player;
-	
+var Player = playerRef.Player;	
 Player.list = listsRef.playerList;
 
 Player.onConnect = function(socket){
-	playerCount++;
-	var player = Player(socket.id, playerCount);
+	var player = Player(socket.id);
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
 			player.pressLeft = data.state;
@@ -83,7 +78,6 @@ Player.onConnect = function(socket){
 }
 Player.onDisconnect = function(socket){
 	delete Player.list[socket.id];
-	playerCount--;
 }
 
 Player.update = function(){

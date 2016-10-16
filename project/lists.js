@@ -11,5 +11,14 @@ Projectile.list = {};
 
 (function(){
 	module.exports.playerList = Player.list;
+	module.exports.playerCount = function(){
+		var count = 0;
+		for (var i in Player.list) {
+			if (Player.list.hasOwnProperty(i)){
+				count++;
+			}
+		}
+		return count;
+	}
 	module.exports.projectileList = Projectile.list;
 }());
