@@ -9,6 +9,8 @@
 		<button id="tankTheme">Tank</button>
 		<button id="bookTheme">Book</button>
 		<button id="spiderTheme">Spider</button>
+		<button id="ufoTheme">UFO</button>
+		<button id="octopusTheme">Octopus</button>		
 	</div>
 	
 	<canvas id="ctx"></canvas>
@@ -49,9 +51,9 @@
 	Img.bgtile = new Image();
 	
 	var Snd = {};
-	Snd.bmg = new Audio();
-	Snd.bmg.loop = true;
-	Snd.bmg.volume = 0.5;
+	Snd.bgm = new Audio();
+	Snd.bgm.loop = true;
+	Snd.bgm.volume = 0.5;
 	Snd.shoot = new Audio();
 //	Snd.death = new Audio();
 	
@@ -62,13 +64,14 @@
 	Img.map.src = '/client/theme/Tank/map.png';
 	Img.bgtile.src = '/client/theme/Tank/bgtile.png';
 	
-	Snd.bmg.src = '/client/theme/Tank/bgm.mp3';
-	Snd.bmg.play(); // play background music
+	Snd.bgm.src = '/client/theme/Tank/bgm.mp3';
+	Snd.bgm.play(); // play background music
 	Snd.shoot.src = '/client/theme/Tank/bullet.mp3';
 //	Snd.death.src = '/client/theme/Tank/death.mp3';
 	
-	var hpColorY = "#00ff99";
-	var hpColorN = "#ff0000";
+	var hpColorY = "#00FF99";
+	var hpColorN = "#FF0000";
+	var hpLine = "#000000";
 	
 	tankTheme.onclick = function() {
 		setTheme("Tank");
@@ -79,6 +82,12 @@
 	spiderTheme.onclick = function() {
 		setTheme("Spider");
 	}
+	ufoTheme.onclick = function() {
+		setTheme("UFO");
+	}	
+	octopusTheme.onclick = function() {
+		setTheme("Octopus");
+	}		
 	
 	// Set up world map
 	var worldMapCanvas = document.getElementById("worldMap");
@@ -270,10 +279,11 @@
 				ctx.fillStyle = hpColorN;
 			}
 			ctx.fillRect(botX + hpWidth * j, botY, hpWidth, hpHeight);
-			ctx.strokeStyle = "#000000";
-			ctx.lineWidth = 1;
-			ctx.strokeRect(botX, botY, HP * hpWidth, hpHeight);
 		}
+		
+		ctx.strokeStyle = hpLine;
+		ctx.lineWidth = 1;
+		ctx.strokeRect(botX, botY, HP * hpWidth, hpHeight);
 	}
 	
 	// On screen resize, variables are recomputed
@@ -297,15 +307,36 @@
 		Img.projectile.src = "/client/theme/" + theme + "/bullet.png";
 		Img.map.src = "/client/theme/" + theme + "/map.png";
 		Img.bgtile.src = "/client/theme/" + theme + "/bgtile.png";
-		Snd.bmg.src = "/client/theme/" + theme + "/bgm.mp3";
+		Snd.bgm.src = "/client/theme/" + theme + "/bgm.mp3";
 		Snd.shoot.src = "/client/theme/" + theme + "/bullet.mp3";
 //		Snd.death.src = "/client/theme/" + theme + "/death.mp3";
-		Snd.bmg.load();
+		Snd.bgm.load();
 		Snd.shoot.load();
 //		Snd.death.load();
-		Snd.bmg.play();
-		hpColorY = "#00ff99";
-		hpColorN = "#ff0000";
+		Snd.bgm.play();
+		
+		switch(theme)
+		{
+			case "UFO":
+				hpColorY = "#F7BE81";
+				hpColorN = "#4B088A";
+				hpLine = "#FFFFFF";
+				break;
+			case "Book":
+				hpColorY = "#2EFEC8";
+				hpColorN = "#B4045F";
+				hpLine = "#0A0A2A";
+				break;			
+			case "Octopus":
+				hpColorY = "#A9F5BC";
+				hpColorN = "#DF013A";
+				hpLine = "#86B404";
+				break;					
+			default:
+			 	hpColorY = "#00FF99";
+				hpColorN = "#FF0000";
+				hpLine = "#000000";
+		}
 	}
 	
 </script>
