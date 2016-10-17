@@ -9,6 +9,12 @@ button {
 	float: left
 }
 
+#muteSound {
+	color: #FFFFFF;
+	background-color: #FFFFFF;
+	float: right
+}
+
 #tankTheme {
 	color: #6E2C00;
 	border: 2px solid #6E2C00;

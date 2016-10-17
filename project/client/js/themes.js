@@ -1,6 +1,4 @@
 	// theme selections
-	var themeDiv = document.getElementById('themeDiv');
-	var tankTheme = document.getElementById('tankTheme');
 	
 	var Img = {};
 	Img.playerTop = new Image();
