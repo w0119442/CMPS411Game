@@ -1,17 +1,15 @@
 // player.js
 
-var MAP_SIZE = 3000;
-
+var globals = require("./globals");
 var listsRef = require("./lists");
-
 var projectileRef = require("./projectile");
 var Projectile = projectileRef.Projectile;
 
 (function(){
-	var Player = function(id, playerCount) {
+	var Player = function(id) {
 		var self = {};
 		self.id = id;
-		self.team = playerCount % 2;
+		self.team = listsRef.playerCount() % 2;
 		self.pressLeft = false;
 		self.pressRight = false;
 		self.pressDown = false;
@@ -26,8 +24,8 @@ var Projectile = projectileRef.Projectile;
 		self.playerKills = 0;
 		self.size = 50;
 		self.radius = self.size / 2;
-		self.x = Math.floor((MAP_SIZE - self.size) * Math.random());
-		self.y = Math.floor((MAP_SIZE - self.size) * Math.random());
+		self.x = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
+		self.y = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
 		
 		console.log("team " + self.team);
 		
@@ -35,8 +33,8 @@ var Projectile = projectileRef.Projectile;
 			self.alive = true;
 			self.hp = 3;
 			self.deathTimer = 0;
-			self.x = Math.floor((MAP_SIZE - self.size) * Math.random());
-			self.y = Math.floor((MAP_SIZE - self.size) * Math.random());
+			self.x = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
+			self.y = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
 		}
 		
 		self.updatePosition = function() {		
@@ -52,7 +50,7 @@ var Projectile = projectileRef.Projectile;
 					self.directAngle = 180;
 				}
 			}
-			else if(self.pressRight && self.x + self.size + self.playerSpeed < MAP_SIZE && !self.playerCollision(self.x + self.playerSpeed, self.y)) {
+			else if(self.pressRight && self.x + self.size + self.playerSpeed < globals.MAP_SIZE && !self.playerCollision(self.x + self.playerSpeed, self.y)) {
 				self.x += self.playerSpeed;		
 				if(self.pressUp) {
 					self.directAngle = -45;
@@ -64,7 +62,7 @@ var Projectile = projectileRef.Projectile;
 					self.directAngle = 0;		
 				}
 			}		
-			if(self.pressDown && self.y + self.size + self.playerSpeed < MAP_SIZE && !self.playerCollision(self.x, self.y + self.playerSpeed)) {
+			if(self.pressDown && self.y + self.size + self.playerSpeed < globals.MAP_SIZE && !self.playerCollision(self.x, self.y + self.playerSpeed)) {
 				self.y += self.playerSpeed;
 				if(!self.pressLeft && !self.pressRight) {
 					self.directAngle = 90;	
@@ -114,6 +112,5 @@ var Projectile = projectileRef.Projectile;
 	}
 	
 	module.exports.Player = Player;
-
 
 }());

@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 var listsRef = require("./lists");
+var globals = require("./globals");
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -11,10 +12,6 @@ app.use('/css',express.static('client/css'));
 
 serv.listen(2000);
 console.log("Server started.");
-
-
-var MAP_SIZE = 3000;
-var playerCount = 0;
 
 
 // ******** GAME LOOP **********************************
@@ -45,15 +42,11 @@ io.sockets.on('connection', function(socket) {
 
 // ******** PLAYER MODULE ********************************
 var playerRef = require("./player");
-
-var Player = playerRef.Player;
-	
+var Player = playerRef.Player;	
 Player.list = listsRef.playerList;
 
 Player.onConnect = function(socket){
-	playerCount++;
-	var player = Player(socket.id, playerCount);
-	//Player.list[player.id] = player;
+	var player = Player(socket.id);
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
 			player.pressLeft = data.state;
@@ -122,8 +115,9 @@ var projectileRef = require("./projectile");
 
 var Projectile = projectileRef.Projectile;
 
+Projectile.list = listsRef.projectileList;
+
 Projectile.update = function(){
-	Projectile.list = listsRef.projectileList;
 	var playPackage = [];
 	for(var i in Projectile.list) {
 		var projectile = Projectile.list[i];
