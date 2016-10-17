@@ -45,7 +45,10 @@ var playerRef = require("./player");
 var Player = playerRef.Player;	
 Player.list = listsRef.playerList;
 
+var playerCount = 0;
+
 Player.onConnect = function(socket){
+	playerCount++;
 	var player = Player(socket.id);
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
