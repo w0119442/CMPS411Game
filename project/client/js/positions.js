@@ -1,6 +1,7 @@
 	var socket = io();
 	var clientId = null;
-	var deathTimer = 0;
+	var pKills = 0;
+//	var deadPlayerIds = {};
 	
 	socket.on('init',function(data) {
 		if(data.selfId) {
@@ -8,13 +9,20 @@
 		}
 	});
 	
+	/*
+	socket.on('death',function(data) {
+		if(data.deadPlayersId) {
+			deadPlayerIds.push(data.deadPlayerId);
+			alert("data.deadPlayerId");
+		}
+	});*/
+	
 	var pCenterX = 0.0;
 	var pCenterY = 0.0;
 	var pOffsetX = 0.0;
 	var pOffsetY = 0.0;
 	
 	socket.on('newPositions',function(data) {
-		console.log(data);
 		ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
 		ctx.fillStyle = patrnBack;
@@ -75,6 +83,12 @@
 				// Draw kill count (temp / test)
 				var killCount = "" + data.player[i].playerKills;
 				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
+				
+				if(data.player[i].playerKills > pKills) {
+					Snd.death.currentTime = 0;
+					Snd.death.play();
+					pKills = data.player[i].playerKills;
+				}
 			
 				// Draw the player base and player top
 				drawPlayer(pOffsetX, pOffsetY, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
@@ -93,15 +107,14 @@
 					// Draw player base and player top
 					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
 					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);	
-					}
-				// ???????? We need a better way to detect a player's death ??????????
-				else if(!data.player[i].alive && deathTimer++ == 0) {
+				}
+				
+				/*
+				else if(deadPlayerIds.indexOf(data.player[i].id) > -1) {
 					Snd.death.currentTime = 0;
 					Snd.death.play();
-					if(deathTimer >= 100) {
-						deathTimer = 0;
-					}
-				}
+					deadPlayerIds.splice(0,deadPlayerIds.length);
+				}*/
 			}
 		}
 	});

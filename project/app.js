@@ -101,6 +101,7 @@ Player.update = function(){
 		playPackage[i] ={
 			x:player.x,
 			y:player.y,
+			id:player.id,
 			mouseAngle:player.mouseAngle,
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,
@@ -137,9 +138,3 @@ Projectile.update = function(){
 	}
 	return playPackage;
 }
-
-
-
-
-
-
