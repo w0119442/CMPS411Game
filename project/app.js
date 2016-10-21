@@ -7,7 +7,9 @@ var globals = require("./globals");
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
+
 app.use('/client',express.static(__dirname + '/client'));
+app.use('/server',express.static(__dirname + '/server'));
 app.use('/css',express.static('client/css'));
 
 serv.listen(2000);
@@ -25,18 +27,27 @@ setInterval(function() {
 }, 1000/25);
 
 // ******** SOCKET MODULE ******************************
+var ipAdd = [];
+
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
-	socket.id = Math.random();
+	var address = socket.handshake.address;
+	console.log("Address: " + address);
 	
-	socket.emit('init',{selfId:socket.id});
-	console.log("init " + socket.id);
+	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1) {
+		ipAdd.push(address);
 		
-	Player.onConnect(socket);	
+		socket.id = Math.random();
+	
+		socket.emit('init',{selfId:socket.id});
+		console.log("init " + socket.id);
 		
-	socket.on('disconnect',function() {
-		Player.onDisconnect(socket);
-	});
+		Player.onConnect(socket);	
+		
+		socket.on('disconnect',function() {
+			Player.onDisconnect(socket);
+		});
+	}
 });
 
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+	<canvas id="map"></canvas>
+	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
+</body>
+
+<script>
+	var inMap = false;
+	var socket = io();
+	
+	window.addEventListener("resize", resizeWindow);
+	var clientWidth = window.innerWidth;
+	var clientHeight = window.innerHeight;
+
+	// Set up game area (viewport)
+	var ctx = document.getElementById("map").getContext("2d");
+	ctx.canvas.width = clientWidth;
+	ctx.canvas.height = clientHeight;
+	ctx.font = '30px Arial';
+	
+	socket.on('newPage',function(data) {
+		//window.location.replace('/bigMap.html');
+		inMap = data.page;
+	});
+	
+	drawMap();
+	
+	function resizeWindow() {
+		clientWidth = window.innerWidth;
+		clientHeight = window.innerHeight;
+		ctx.canvas.width = clientWidth;
+		ctx.canvas.height = clientHeight;
+		ctx.font = '30px Arial';
+		drawMap();
+	}
+	
+	function drawMap() {
+		ctx.rect(5,5,clientWidth - 5, clientHeight - 5);
+		ctx.stroke();
+	}
+</script>
+</html>
