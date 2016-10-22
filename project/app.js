@@ -38,7 +38,7 @@ io.sockets.on('connection', function(socket) {
 	var address = socket.handshake.address;
 	console.log("Address: " + address);
 	
-	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 50) {
+	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 25) {
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
@@ -49,7 +49,7 @@ io.sockets.on('connection', function(socket) {
 		Player.onConnect(socket);	
 		
 		socket.on('disconnect',function() {
-			Player.onDisconnect(socket);
+			Player.onDisconnect(socket, address);
 		});
 	}
 	else {
@@ -97,8 +97,12 @@ Player.onConnect = function(socket){
 		}
 	});
 }
-Player.onDisconnect = function(socket){
+Player.onDisconnect = function(socket, address){
 	playerCount--;	
+	var index = ipAdd.indexOf(address);
+	if(index > -1) {
+		ipAdd.splice(index, 1);
+	}
 	delete Player.list[socket.id];
 }
 

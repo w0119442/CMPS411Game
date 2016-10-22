@@ -12,10 +12,16 @@
 
 <script>
 	var socket = io();
+	var fixRadius = 10;
+	var maxNumPlay = 100;
+	var borderSize = 5;
+	var lnWidth = 4;
 	
 	window.addEventListener("resize", resizeWindow);
-	var clientWidth = Math.floor(0.95 * window.innerWidth);
-	var clientHeight = Math.floor(0.95 * window.innerHeight);
+	var clientWidth = Math.floor(0.98 * (window.innerWidth - borderSize));
+	var clientHeight = Math.floor(0.98 * (window.innerHeight - borderSize));
+	var playFit = Math.min(Math.floor(clientWidth/maxNumPlay), Math.floor(clientHeight/maxNumPlay));
+	var radius = Math.max(fixRadius, playFit);
 
 	// Set up game area (viewport)
 	var ctx = document.getElementById("map").getContext("2d");
@@ -27,39 +33,58 @@
 		drawMap();
 		
 		for(var i in data.player) {	
-			drawPlayers(data.player[i].x, data.player[i].y);
+			drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
 		}
 	});
 	
 	function resizeWindow() {
-		clientWidth = Math.floor(0.95 * window.innerWidth);
-		clientHeight = Math.floor(0.95 * window.innerHeight);
+		clientWidth = Math.floor(0.98 * (window.innerWidth - borderSize));
+		clientHeight = Math.floor(0.98 * (window.innerHeight - borderSize));
 		ctx.canvas.width = clientWidth;
 		ctx.canvas.height = clientHeight;
+		playFit = Math.min(Math.floor(clientWidth/maxNumPlay), Math.floor(clientHeight/maxNumPlay));
+		radius = Math.max(fixRadius, playFit);	
 		ctx.font = '30px Arial';
 	}
 	
 	function drawMap() {
 		ctx.clearRect(0, 0, clientWidth, clientHeight);	
 		ctx.beginPath();
-		ctx.lineWidth = "4";
+		ctx.lineWidth = lnWidth;
 		ctx.strokeStyle = "green";
-		ctx.rect(5,5,clientWidth - 5, clientHeight - 5);
+		ctx.rect(borderSize, borderSize, clientWidth - borderSize, clientHeight - borderSize);
 		ctx.stroke();
 	}
 	
-	function drawPlayers(playerX, playerY) {
+	function drawPlayers(playerX, playerY, team) {
 		var xCoord = 0;
 		var yCoord = 0;
+		var color0 = "#FFA500";
+		var color1 = "#0059FF";
+		var color = "#FFFFFF";
 		
-		var scaleX = clientWidth/(WORLD_WIDTH * MAP_WRAP_NUMBER);
-		var scaleY = clientHeight/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
+		var scaleX = (clientWidth)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
+		var scaleY = (clientHeight)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
 		
-		xCoord = Math.floor(scaleX * playerX);
-		yCoord = Math.floor(scaleY * playerY);
+		var trans = borderSize + lnWidth;
+		
+		var cush = PLAYER_SIZE/2 + trans;
+		
+		xCoord = Math.floor(scaleX * (playerX + cush) + trans);
+		yCoord = Math.floor(scaleY * (playerY + cush) + trans);
+		
+		if(team == 0) {
+			color = color0;
+		}
+		else {
+			color = color1;
+		}
 		
 		ctx.beginPath();
-		ctx.arc(xCoord, yCoord, 5, 0, 2*Math.PI);
+		ctx.arc(xCoord, yCoord, radius, 0, 2*Math.PI);
+		ctx.fillStyle = color;
+		ctx.fill();
+		ctx.strokeStyle = color;
 		ctx.stroke();
 	}
 </script>
