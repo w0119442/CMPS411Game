@@ -4,6 +4,10 @@ var serv = require('http').Server(app);
 var listsRef = require("./lists");
 var globals = require("./globals");
 
+app.get('/bigMap',function(req, res) {
+	res.sendFile(__dirname + '/server/bigMap.html');
+});
+
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
@@ -34,7 +38,7 @@ io.sockets.on('connection', function(socket) {
 	var address = socket.handshake.address;
 	console.log("Address: " + address);
 	
-	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1) {
+	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 50) {
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
@@ -47,6 +51,9 @@ io.sockets.on('connection', function(socket) {
 		socket.on('disconnect',function() {
 			Player.onDisconnect(socket);
 		});
+	}
+	else {
+		socket.emit('init',{selfId:-1});
 	}
 });
 

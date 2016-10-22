@@ -4,8 +4,11 @@
 //	var deadPlayerIds = {};
 	
 	socket.on('init',function(data) {
-		if(data.selfId) {
+		if(data.selfId && data.selfId != -1) {
 			clientId = data.selfId;
+		}
+		else {
+			window.location.replace('/bigMap');
 		}
 	});
 	

@@ -8,13 +8,14 @@
 	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
 </body>
 
+<script src="/client/js/constants.js"></script>
+
 <script>
-	var inMap = false;
 	var socket = io();
 	
 	window.addEventListener("resize", resizeWindow);
-	var clientWidth = window.innerWidth;
-	var clientHeight = window.innerHeight;
+	var clientWidth = Math.floor(0.95 * window.innerWidth);
+	var clientHeight = Math.floor(0.95 * window.innerHeight);
 
 	// Set up game area (viewport)
 	var ctx = document.getElementById("map").getContext("2d");
@@ -22,24 +23,43 @@
 	ctx.canvas.height = clientHeight;
 	ctx.font = '30px Arial';
 	
-	socket.on('newPage',function(data) {
-		//window.location.replace('/bigMap.html');
-		inMap = data.page;
+	socket.on('newPositions',function(data) {
+		drawMap();
+		
+		for(var i in data.player) {	
+			drawPlayers(data.player[i].x, data.player[i].y);
+		}
 	});
 	
-	drawMap();
-	
 	function resizeWindow() {
-		clientWidth = window.innerWidth;
-		clientHeight = window.innerHeight;
+		clientWidth = Math.floor(0.95 * window.innerWidth);
+		clientHeight = Math.floor(0.95 * window.innerHeight);
 		ctx.canvas.width = clientWidth;
 		ctx.canvas.height = clientHeight;
 		ctx.font = '30px Arial';
-		drawMap();
 	}
 	
 	function drawMap() {
+		ctx.clearRect(0, 0, clientWidth, clientHeight);	
+		ctx.beginPath();
+		ctx.lineWidth = "4";
+		ctx.strokeStyle = "green";
 		ctx.rect(5,5,clientWidth - 5, clientHeight - 5);
+		ctx.stroke();
+	}
+	
+	function drawPlayers(playerX, playerY) {
+		var xCoord = 0;
+		var yCoord = 0;
+		
+		var scaleX = clientWidth/(WORLD_WIDTH * MAP_WRAP_NUMBER);
+		var scaleY = clientHeight/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
+		
+		xCoord = Math.floor(scaleX * playerX);
+		yCoord = Math.floor(scaleY * playerY);
+		
+		ctx.beginPath();
+		ctx.arc(xCoord, yCoord, 5, 0, 2*Math.PI);
 		ctx.stroke();
 	}
 </script>
