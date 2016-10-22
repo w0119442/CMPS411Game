@@ -14,12 +14,12 @@
 	var socket = io();
 	var fixRadius = 10;
 	var maxNumPlay = 100;
-	var borderSize = 5;
-	var lnWidth = 4;
+	var borderSize = 10;
+	var team = 0;
 	
 	window.addEventListener("resize", resizeWindow);
-	var clientWidth = Math.floor(0.98 * (window.innerWidth - borderSize));
-	var clientHeight = Math.floor(0.98 * (window.innerHeight - borderSize));
+	var clientWidth = window.innerWidth - 2 * borderSize;
+	var clientHeight = window.innerHeight - 2 * borderSize;
 	var playFit = Math.min(Math.floor(clientWidth/maxNumPlay), Math.floor(clientHeight/maxNumPlay));
 	var radius = Math.max(fixRadius, playFit);
 
@@ -32,14 +32,18 @@
 	socket.on('newPositions',function(data) {
 		drawMap();
 		
+		if(clientId != null && clientId !=-1) {
+			team = data.player[clientId].team;
+		}
+		
 		for(var i in data.player) {	
 			drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
 		}
 	});
 	
 	function resizeWindow() {
-		clientWidth = Math.floor(0.98 * (window.innerWidth - borderSize));
-		clientHeight = Math.floor(0.98 * (window.innerHeight - borderSize));
+		clientWidth = window.innerWidth - 2 * borderSize;
+		clientHeight = window.innerHeight - 2 * borderSize;
 		ctx.canvas.width = clientWidth;
 		ctx.canvas.height = clientHeight;
 		playFit = Math.min(Math.floor(clientWidth/maxNumPlay), Math.floor(clientHeight/maxNumPlay));
@@ -49,35 +53,33 @@
 	
 	function drawMap() {
 		ctx.clearRect(0, 0, clientWidth, clientHeight);	
+		ctx.fillStyle = "#E5E4E2";
+		ctx.fillRect(0, 0, clientWidth, clientHeight);
 		ctx.beginPath();
-		ctx.lineWidth = lnWidth;
-		ctx.strokeStyle = "green";
-		ctx.rect(borderSize, borderSize, clientWidth - borderSize, clientHeight - borderSize);
+		ctx.lineWidth = borderSize;
+		ctx.strokeStyle = "#000000";
+		ctx.rect(0, 0, clientWidth, clientHeight);
 		ctx.stroke();
 	}
 	
-	function drawPlayers(playerX, playerY, team) {
+	function drawPlayers(playerX, playerY, pTeam) {
 		var xCoord = 0;
 		var yCoord = 0;
-		var color0 = "#FFA500";
-		var color1 = "#0059FF";
+		var hpColorN = "#990012";
+		var hpColorY = "#6cc417";
 		var color = "#FFFFFF";
 		
-		var scaleX = (clientWidth)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
-		var scaleY = (clientHeight)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
+		var scaleX = (clientWidth - 2 * borderSize)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
+		var scaleY = (clientHeight - 2 * borderSize)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
 		
-		var trans = borderSize + lnWidth;
+		xCoord = Math.floor(scaleX * (playerX + PLAYER_SIZE/2) + borderSize);
+		yCoord = Math.floor(scaleY * (playerY + PLAYER_SIZE/2) + borderSize);
 		
-		var cush = PLAYER_SIZE/2 + trans;
-		
-		xCoord = Math.floor(scaleX * (playerX + cush) + trans);
-		yCoord = Math.floor(scaleY * (playerY + cush) + trans);
-		
-		if(team == 0) {
-			color = color0;
+		if(team === pTeam) {
+			color = hpColorY;
 		}
 		else {
-			color = color1;
+			color = hpColorN;
 		}
 		
 		ctx.beginPath();

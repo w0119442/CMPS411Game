@@ -1,5 +1,5 @@
 	var socket = io();
-	var clientId = null;
+	//var clientId = null;
 	var pKills = 0;
 //	var deadPlayerIds = {};
 	
