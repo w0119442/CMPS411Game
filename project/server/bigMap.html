@@ -4,11 +4,17 @@
 </head>
 
 <body>
-	<canvas id="map"></canvas>
+	<canvas id="map"></canvas>	
+	<div id="gameInfo" style="height:35px;">
+		<div id="totalPlay" style="float:left;"></div>
+		<div id="team0" style="float:left; margin-left:15px;"></div>
+		<div id="team1" style="float:left; margin-left:15px;"></div>
+	</div>		
 	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
 </body>
 
 <script src="/client/js/constants.js"></script>
+<script src="/client/js/drawFunctions.js"></script>
 
 <script>
 	var socket = io();
@@ -16,14 +22,18 @@
 	var maxNumPlay = 100;
 	var borderSize = 10;
 	var team = 0;
-	
+	var divHeight = 35;
+	var cntTeam0 = 0;
+	var cntTeam1 = 0;
+	var cntPlayers = 0;	
+
 	window.addEventListener("resize", resizeWindow);
 	var clientWidth = window.innerWidth - 2 * borderSize;
-	var clientHeight = window.innerHeight - 2 * borderSize;
+	var clientHeight = window.innerHeight - 2 * borderSize - divHeight;
 	var playFit = Math.min(Math.floor(clientWidth/maxNumPlay), Math.floor(clientHeight/maxNumPlay));
 	var radius = Math.max(fixRadius, playFit);
 
-	// Set up game area (viewport)
+	// Set up map area
 	var ctx = document.getElementById("map").getContext("2d");
 	ctx.canvas.width = clientWidth;
 	ctx.canvas.height = clientHeight;
@@ -32,62 +42,38 @@
 	socket.on('newPositions',function(data) {
 		drawMap();
 		
-		if(clientId != null && clientId !=-1) {
+		cntTeam0 = 0;
+		cntTeam1 = 0;
+		cntPlayers = 0;
+		
+		if(clientId != null && clientId != -1) {
 			team = data.player[clientId].team;
 		}
 		
 		for(var i in data.player) {	
+			cntPlayers++;
 			drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
 		}
+		
+		var corPlay = " players";
+		var corFrnd = " friends";
+		var corEnem = " enemies";
+		
+		if(cntPlayers == 1) {
+			corPlay = " player";
+		}
+		
+		if(cntTeam0 == 1) {
+			corFrnd = " friend";
+		}
+		
+		if(cntTeam1 == 1) {
+			corEnem = " enemy";
+		}	
+		
+		document.getElementById("totalPlay").innerHTML = cntPlayers + corPlay;
+		document.getElementById("team0").innerHTML = cntTeam0 + corFrnd;
+		document.getElementById("team1").innerHTML = cntTeam1 + corEnem;
 	});
-	
-	function resizeWindow() {
-		clientWidth = window.innerWidth - 2 * borderSize;
-		clientHeight = window.innerHeight - 2 * borderSize;
-		ctx.canvas.width = clientWidth;
-		ctx.canvas.height = clientHeight;
-		playFit = Math.min(Math.floor(clientWidth/maxNumPlay), Math.floor(clientHeight/maxNumPlay));
-		radius = Math.max(fixRadius, playFit);	
-		ctx.font = '30px Arial';
-	}
-	
-	function drawMap() {
-		ctx.clearRect(0, 0, clientWidth, clientHeight);	
-		ctx.fillStyle = "#E5E4E2";
-		ctx.fillRect(0, 0, clientWidth, clientHeight);
-		ctx.beginPath();
-		ctx.lineWidth = borderSize;
-		ctx.strokeStyle = "#000000";
-		ctx.rect(0, 0, clientWidth, clientHeight);
-		ctx.stroke();
-	}
-	
-	function drawPlayers(playerX, playerY, pTeam) {
-		var xCoord = 0;
-		var yCoord = 0;
-		var hpColorN = "#990012";
-		var hpColorY = "#6cc417";
-		var color = "#FFFFFF";
-		
-		var scaleX = (clientWidth - 2 * borderSize)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
-		var scaleY = (clientHeight - 2 * borderSize)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
-		
-		xCoord = Math.floor(scaleX * (playerX + PLAYER_SIZE/2) + borderSize);
-		yCoord = Math.floor(scaleY * (playerY + PLAYER_SIZE/2) + borderSize);
-		
-		if(team === pTeam) {
-			color = hpColorY;
-		}
-		else {
-			color = hpColorN;
-		}
-		
-		ctx.beginPath();
-		ctx.arc(xCoord, yCoord, radius, 0, 2*Math.PI);
-		ctx.fillStyle = color;
-		ctx.fill();
-		ctx.strokeStyle = color;
-		ctx.stroke();
-	}
 </script>
 </html>
