@@ -6,4 +6,4 @@
 	var PLAYER_SIZE = 50;
 	var HP = 3;
 	
-	var clientId = null;	
+	var clientId = null;

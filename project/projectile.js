@@ -19,7 +19,7 @@ var Player = playerRef.Player;
 		self.toRemove = false;
 		self.size = 10;
 		self.updatePosition = function() {
-			if(self.timer++ > 100){
+			if(self.timer++ > 50){
 				self.toRemove = true;
 			}
 			else if(self.x + self.spdX < 0 || self.x + self.spdX > globals.MAP_SIZE) {

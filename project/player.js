@@ -87,7 +87,7 @@ var Projectile = projectileRef.Projectile;
 			var playCenterY = playerY + self.radius;
 		
 			for(var i in Player.list) {
-				if(Player.list[i].id != self.id && self.team != Player.list[i].team) {
+				if(Player.list[i].id != self.id && self.team != Player.list[i].team && Player.list[i].alive) {
 					var centerX = Player.list[i].x + self.radius;
 					var centerY = Player.list[i].y + self.radius;
 				

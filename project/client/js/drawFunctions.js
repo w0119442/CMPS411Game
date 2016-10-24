@@ -21,7 +21,7 @@
 		xCoord = Math.floor(scaleX * (playerX + PLAYER_SIZE/2) + borderSize);
 		yCoord = Math.floor(scaleY * (playerY + PLAYER_SIZE/2) + borderSize);
 		
-		if(team === pTeam) {
+		if(team == pTeam) {
 			color = hpColorY;
 			cntTeam0++;
 		}

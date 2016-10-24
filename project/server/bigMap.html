@@ -39,6 +39,12 @@
 	ctx.canvas.height = clientHeight;
 	ctx.font = '30px Arial';
 	
+	socket.on('init',function(data) {
+		if(data.selfId && data.selfId != -1) {
+			clientId = data.selfId;
+		}
+	});
+	
 	socket.on('newPositions',function(data) {
 		drawMap();
 		
@@ -52,7 +58,9 @@
 		
 		for(var i in data.player) {	
 			cntPlayers++;
-			drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
+			if(data.player[i].alive) {
+				drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
+			}
 		}
 		
 		var corPlay = " players";
