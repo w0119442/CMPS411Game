@@ -6,9 +6,10 @@ var projectileRef = require("./projectile");
 var Projectile = projectileRef.Projectile;
 
 (function(){
-	var Player = function(id) {
+	var Player = function(id, add) {
 		var self = {};
 		self.id = id;
+		self.address = add;
 		self.team = listsRef.playerCount() % 2;
 		self.pressLeft = false;
 		self.pressRight = false;

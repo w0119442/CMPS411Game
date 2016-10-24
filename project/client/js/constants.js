@@ -5,5 +5,3 @@
 	var BORDER_SIZE = 32;
 	var PLAYER_SIZE = 50;
 	var HP = 3;
-	
-	var clientId = null;

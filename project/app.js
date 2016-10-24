@@ -38,22 +38,22 @@ io.sockets.on('connection', function(socket) {
 	var address = socket.handshake.address;
 	console.log("Address: " + address);
 	
-	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 25) {
+	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 26) {
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
 	
-		socket.emit('init',{selfId:socket.id});
+		socket.emit('init',{selfId:socket.id, selfAdd:address});
 		console.log("init " + socket.id);
 		
-		Player.onConnect(socket);	
+		Player.onConnect(socket, address);	
 		
 		socket.on('disconnect',function() {
 			Player.onDisconnect(socket, address);
 		});
 	}
 	else {
-		socket.emit('init',{selfId:-1});
+		socket.emit('init',{selfId:-1, selfAdd:address});
 	}
 });
 
@@ -65,9 +65,9 @@ Player.list = listsRef.playerList;
 
 var playerCount = 0;
 
-Player.onConnect = function(socket){
+Player.onConnect = function(socket, add){
 	playerCount++;
-	var player = Player(socket.id);
+	var player = Player(socket.id, add);
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
 			player.pressLeft = data.state;
@@ -124,6 +124,7 @@ Player.update = function(){
 			x:player.x,
 			y:player.y,
 			id:player.id,
+			add:player.address,
 			mouseAngle:player.mouseAngle,
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,

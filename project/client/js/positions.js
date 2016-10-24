@@ -1,11 +1,11 @@
 	var socket = io();
-	//var clientId = null;
+	var clientId = null;
 	var pKills = 0;
 //	var deadPlayerIds = {};
 	
 	socket.on('init',function(data) {
 		if(data.selfId && data.selfId != -1) {
-			clientId = data.selfId;
+			clientId = data.selfId;	
 		}
 		else {
 			window.location.replace('/bigMap');
