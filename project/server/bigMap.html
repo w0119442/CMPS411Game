@@ -26,7 +26,7 @@
 	var divHeight = 35;
 	var cntTeam0 = 0;
 	var cntTeam1 = 0;
-	var cntPlayers = 0;	
+	var cntPlayers = 0;
 
 	window.addEventListener("resize", resizeWindow);
 	var clientWidth = window.innerWidth - 2 * borderSize;
@@ -68,7 +68,12 @@
 		for(var i in data.player) {	
 			cntPlayers++;
 			if(data.player[i].alive) {
-				drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
+				if(data.player[i].id != data.player[index].id) {
+					drawPlayers(false, data.player[i].x, data.player[i].y, data.player[i].team);
+				}
+				else {
+					drawPlayers(true, data.player[i].x, data.player[i].y, data.player[i].team);			
+				}
 			}
 		}
 		

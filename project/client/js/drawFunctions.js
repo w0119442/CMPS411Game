@@ -8,11 +8,11 @@
 	}
 	
 	// Function for drawing players as circle for big map
-	function drawPlayers(playerX, playerY, pTeam) {
+	function drawPlayers(isPlayer, playerX, playerY, pTeam) {
 		var xCoord = 0;
 		var yCoord = 0;
 		var hpColorN = "#990012";
-		var hpColorY = "#6cc417";
+		var hpColorY = "#6CC417";
 		var color = "#FFFFFF";
 		
 		var scaleX = (clientWidth - 2 * borderSize)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
@@ -34,8 +34,15 @@
 		ctx.arc(xCoord, yCoord, radius, 0, 2*Math.PI);
 		ctx.fillStyle = color;
 		ctx.fill();
-		ctx.strokeStyle = color;
-		ctx.stroke();
+		if(!isPlayer) {
+			ctx.strokeStyle = color;
+			ctx.stroke();
+		}
+		else {
+			ctx.strokeStyle = "#000000";
+			ctx.lineWidth = 2;
+			ctx.stroke();
+		}
 	}	
 	
 	// Function for drawing the hp bar

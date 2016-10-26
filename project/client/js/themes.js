@@ -83,4 +83,7 @@
 				hpColorN = "#FF0000";
 				hpLine = "#000000";
 		}
+		
+		ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);		
+		ctx.drawImage(Img.map, 0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 	}
