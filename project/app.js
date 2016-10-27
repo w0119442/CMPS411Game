@@ -38,7 +38,7 @@ io.sockets.on('connection', function(socket) {
 	var address = Math.random() * 1000;//socket.handshake.address;
 	console.log("Address: " + address);
 	
-	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 26) {
+	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 100) {
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
