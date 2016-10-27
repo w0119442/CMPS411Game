@@ -16,7 +16,7 @@ app.use('/client',express.static(__dirname + '/client'));
 app.use('/server',express.static(__dirname + '/server'));
 app.use('/css',express.static('client/css'));
 
-serv.listen(2000);
+serv.listen(80);
 console.log("Server started.");
 
 
@@ -35,7 +35,7 @@ var ipAdd = [];
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
-	var address = socket.handshake.address;
+	var address = Math.random() * 1000;//socket.handshake.address;
 	console.log("Address: " + address);
 	
 	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 26) {
