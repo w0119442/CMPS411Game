@@ -16,7 +16,7 @@ app.use('/client',express.static(__dirname + '/client'));
 app.use('/server',express.static(__dirname + '/server'));
 app.use('/css',express.static('client/css'));
 
-serv.listen(2000);
+serv.listen(80);
 console.log("Server started.");
 
 
