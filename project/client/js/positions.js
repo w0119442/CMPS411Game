@@ -120,4 +120,14 @@
 				}*/
 			}
 		}
+		
+		for(var i = 0; i < data.flag.length; i++) {
+			if(Math.abs(pCenterX - data.flag[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.flag[i].y) < VIEW_HEIGHT) {
+				var flagX = data.flag[i].x - pCenterX + pOffsetX;
+				var flagY = data.flag[i].y - pCenterY + pOffsetY;
+
+				ctx.drawImage(Img.flag, flagX, flagY);	
+			}
+		}
+		
 	});

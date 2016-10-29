@@ -25,6 +25,7 @@ setInterval(function() {
 	var playPackage = {
 		player:Player.update(),
 		projectile:Projectile.update(),
+		flag:Flag.update(),
 	}
 
 	io.emit('newPositions', playPackage);
@@ -99,6 +100,12 @@ Player.onConnect = function(socket, add){
 }
 Player.onDisconnect = function(socket, address){
 	playerCount--;	
+	for(var i in Flag.list) {
+		var flag = Flag.list[i];
+		if(flag.carrierId == socket.id){
+			flag.carrierId = null;
+		}
+	}
 	var index = ipAdd.indexOf(address);
 	if(index > -1) {
 		ipAdd.splice(index, 1);
@@ -158,6 +165,28 @@ Projectile.update = function(){
 				y:projectile.y,
 			});
 		}
+	}
+	return playPackage;
+}
+
+// ******** FLAG MODULE ****************************
+var flagRef = require("./flag");
+
+var Flag = flagRef.Flag;
+
+Flag.list = listsRef.flagList;
+flagRef.Flag();
+console.log(Flag);
+
+Flag.update = function(){
+	var playPackage = [];
+	for(var i in Flag.list) {
+		var flag = Flag.list[i];
+		flag.updatePosition();
+		playPackage.push({
+			x:flag.x,
+			y:flag.y,
+		});
 	}
 	return playPackage;
 }

@@ -6,6 +6,7 @@
 	Img.projectile = new Image();
 	Img.map = new Image();
 	Img.bgtile = new Image();
+	Img.flag = new Image();
 	
 	var Snd = {};
 	Snd.bgm = new Audio();
@@ -20,6 +21,7 @@
 	Img.projectile.src = '/client/theme/Tank/bullet.png';
 	Img.map.src = '/client/theme/Tank/map.png';
 	Img.bgtile.src = '/client/theme/Tank/bgtile.png';
+	Img.flag.src = '/client/theme/Tank/flag.png';
 	
 	Snd.bgm.src = '/client/theme/Tank/bgm.mp3';
 	Snd.bgm.play(); // play background music
@@ -53,6 +55,7 @@
 		Img.projectile.src = "/client/theme/" + theme + "/bullet.png";
 		Img.map.src = "/client/theme/" + theme + "/map.png";
 		Img.bgtile.src = "/client/theme/" + theme + "/bgtile.png";
+		Img.flag.src = "/client/theme/" + theme + "/flag.png";
 		Snd.bgm.src = "/client/theme/" + theme + "/bgm.mp3";
 		Snd.shoot.src = "/client/theme/" + theme + "/bullet.mp3";
 		Snd.death.src = "/client/theme/" + theme + "/death.mp3";

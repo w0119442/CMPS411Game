@@ -6,8 +6,12 @@ var Player = playerRef.Player;
 var projectileRef = require("./projectile");
 var Projectile = projectileRef.Projectile;
 
+var flagRef = require("./flag");
+var Flag = flagRef.Flag;
+
 Player.list = {};
 Projectile.list = {};
+Flag.list = {};
 
 (function(){
 	module.exports.playerList = Player.list;
@@ -21,4 +25,5 @@ Projectile.list = {};
 		return count;
 	}
 	module.exports.projectileList = Projectile.list;
+	module.exports.flagList = Flag.list;
 }());
