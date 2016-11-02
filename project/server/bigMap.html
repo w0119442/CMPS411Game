@@ -18,7 +18,7 @@
 
 <script>
 	var socket = io();
-	var clientId = null;
+	//var clientId = null;
 	var fixRadius = 10;
 	var maxNumPlay = 100;
 	var borderSize = 10;
@@ -40,11 +40,12 @@
 	ctx.canvas.height = clientHeight;
 	ctx.font = '30px Arial';
 	
+	/*
 	socket.on('init',function(data) {
 		if(data.selfAdd) {
 			clientId = data.selfAdd;	
 		}
-	});
+	});*/
 	
 	socket.on('newPositions',function(data) {
 		drawMap();
@@ -53,6 +54,7 @@
 		cntTeam1 = 0;
 		cntPlayers = 0;
 		
+		/*
 		var index = -1;
 		for(var i in data.player) {
 			if (data.player[i].add == clientId) {
@@ -63,35 +65,30 @@
 		
 		if(index != -1) {
 			team = data.player[index].team;
-		}
+		}*/
 		
 		for(var i in data.player) {	
 			cntPlayers++;
 			if(data.player[i].alive) {
+				drawPlayers(false, data.player[i].x, data.player[i].y, data.player[i].team);
+			/*
 				if(data.player[i].id != data.player[index].id) {
 					drawPlayers(false, data.player[i].x, data.player[i].y, data.player[i].team);
 				}
 				else {
 					drawPlayers(true, data.player[i].x, data.player[i].y, data.player[i].team);			
 				}
+			*/
 			}
 		}
 		
 		var corPlay = " players";
-		var corFrnd = " friends";
-		var corEnem = " enemies";
+		var corFrnd = " Team Omega";
+		var corEnem = " Team Alpha";
 		
 		if(cntPlayers == 1) {
 			corPlay = " player";
 		}
-		
-		if(cntTeam0 == 1) {
-			corFrnd = " friend";
-		}
-		
-		if(cntTeam1 == 1) {
-			corEnem = " enemy";
-		}	
 		
 		document.getElementById("totalPlay").innerHTML = cntPlayers + corPlay;
 		document.getElementById("team0").innerHTML = cntTeam0 + corFrnd;

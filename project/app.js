@@ -1,8 +1,23 @@
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var app = express();
 var serv = require('http').Server(app);
 var listsRef = require("./lists");
 var globals = require("./globals");
+
+app.use(cookieParser());
+
+//set cookie
+app.use(function(req, res, next) {
+	var cookie = req.cookies.cookieName;
+	if(cookie == undefined) {
+		var cookieId = Math.random().toString();
+		cookieId = cookieId.substring(2, cookieId.length);
+		res.cookie('cookieName', cookieId, {maxAge: 900000, httpOnly: true});
+		console.log('cookie created successfully');
+	}
+	next();
+});
 
 app.get('/bigMap',function(req, res) {
 	res.sendFile(__dirname + '/server/bigMap.html');
@@ -16,7 +31,7 @@ app.use('/client',express.static(__dirname + '/client'));
 app.use('/server',express.static(__dirname + '/server'));
 app.use('/css',express.static('client/css'));
 
-serv.listen(80);
+serv.listen(2000); // change back to 80 for server
 console.log("Server started.");
 
 
@@ -36,10 +51,16 @@ var ipAdd = [];
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
-	var address = Math.random() * 1000;//socket.handshake.address;
+	//var address = Math.random() * 1000; //socket.handshake.address;
+	var cookieId = socket.handshake.headers.cookie;
+	var cookieName = cookieId.split(';')[1];
+	var address = cookieName;
+	if(cookieName != undefined) {
+		address = cookieName.split('=')[1];
+	}
 	console.log("Address: " + address);
 	
-	if(ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 100) {
+	if(address == undefined || ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 100) {
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
@@ -176,7 +197,7 @@ var Flag = flagRef.Flag;
 
 Flag.list = listsRef.flagList;
 flagRef.Flag();
-console.log(Flag);
+//console.log(Flag);
 
 Flag.update = function(){
 	var playPackage = [];
