@@ -1,5 +1,6 @@
 	var socket = io();
 	var clientId = null;
+	var playerTeam = 0;
 	var pKills = 0;
 //	var deadPlayerIds = {};
 	
@@ -31,7 +32,7 @@
 		ctx.fillStyle = patrnBack;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	
-		var playerTeam = data.player[clientId].team;
+		playerTeam = data.player[clientId].team;
 		var playerX = data.player[clientId].x;
 		var playerY = data.player[clientId].y;
 		var xPosImage = 0.0;
@@ -118,6 +119,27 @@
 					Snd.death.play();
 					deadPlayerIds.splice(0,deadPlayerIds.length);
 				}*/
+			}
+		}
+		
+		if(miniMapOn) {
+			var isPlayer = false;
+			miniMap.clearRect(0, 0, miniMap.canvas.width, miniMap.canvas.height);
+			miniMap.globalAlpha = 0.4;	
+			miniMap.fillStyle = hpLine;			
+			miniMap.fillRect(0, 0, miniMap.canvas.width, miniMap.canvas.height);	
+			
+			for(var i in data.player) {
+				if(i == clientId) {
+					isPlayer = true;
+				}
+				else {
+					isPlayer = false;
+				}
+				
+				if(data.player[i].alive) {
+					drawMiniMap(isPlayer, data.player[i].x, data.player[i].y, data.player[i].team, playerTeam);
+				}
 			}
 		}
 		

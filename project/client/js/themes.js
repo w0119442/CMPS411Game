@@ -69,7 +69,7 @@
 			case "UFO":
 				hpColorY = "#F7BE81";
 				hpColorN = "#4B088A";
-				hpLine = "#FFFFFF";
+				hpLine = "#FFFFC2";
 				break;
 			case "Book":
 				hpColorY = "#2EFEC8";
@@ -80,7 +80,11 @@
 				hpColorY = "#A9F5BC";
 				hpColorN = "#DF013A";
 				hpLine = "#86B404";
-				break;					
+				break;	
+			case "Spider":
+				hpColorY = "#00FF99";
+				hpColorN = "#FF0000";
+				hpLine = "#98AFC7";
 			default:
 			 	hpColorY = "#00FF99";
 				hpColorN = "#FF0000";

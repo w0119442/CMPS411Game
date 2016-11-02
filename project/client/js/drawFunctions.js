@@ -7,8 +7,42 @@
 		ctx.restore();	
 	}
 	
-	// Function for drawing players as circle for big map
-	function drawPlayers(isPlayer, playerX, playerY, pTeam) {
+	// Function for drawing player dots on minimap
+	function drawMiniMap(isPlayer, playerX, playerY, pTeam, team) {
+		var xCoord = 0;
+		var yCoord = 0;	
+		var color = "#FFFFFF";
+		
+		var scaleX = (miniMap.canvas.width)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
+		var scaleY = (miniMap.canvas.height)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
+		
+		xCoord = Math.floor(scaleX * (playerX + PLAYER_SIZE/2));
+		yCoord = Math.floor(scaleY * (playerY + PLAYER_SIZE/2));	
+		
+		if(team == pTeam) {
+			color = hpColorY;
+		}
+		else {
+			color = hpColorN;
+		}
+		
+		miniMap.beginPath();
+		miniMap.arc(xCoord, yCoord, 4, 0, 2*Math.PI);
+		miniMap.fillStyle = color;
+		miniMap.fill();
+		
+		if(!isPlayer) {
+			miniMap.strokeStyle = color;
+			miniMap.stroke()
+		}
+		else {
+			miniMap.strokestyle = "#000000";
+			miniMap.stroke();
+		} 		
+	}
+	
+	// Function for drawing players as circles for big map
+	function drawPlayers(playerX, playerY, pTeam) {
 		var xCoord = 0;
 		var yCoord = 0;
 		var hpColorN = "#990012";
@@ -34,15 +68,8 @@
 		ctx.arc(xCoord, yCoord, radius, 0, 2*Math.PI);
 		ctx.fillStyle = color;
 		ctx.fill();
-		if(!isPlayer) {
-			ctx.strokeStyle = color;
-			ctx.stroke();
-		}
-		else {
-			ctx.strokeStyle = "#000000";
-			ctx.lineWidth = 2;
-			ctx.stroke();
-		}
+		ctx.strokeStyle = color;
+		ctx.stroke()
 	}	
 	
 	// Function for drawing the hp bar
@@ -71,12 +98,17 @@
 		clientHeight = window.innerHeight;
 		VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
 		VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
+		
 		ctx.canvas.width = VIEW_WIDTH;
 		ctx.canvas.height = VIEW_HEIGHT;
 		ctx.font = '30px Arial';
 		var patrnBack = ctx.createPattern(Img.bgtile, "repeat");
 		ctx.fillStyle = patrnBack;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		
+		miniMap.canvas.width = VIEW_WIDTH/3;
+		miniMap.canvas.height = VIEW_HEIGHT/3;
+		miniMap.canvas.style.top =""+2*miniMap.canvas.height+"px";		
 	}
 	
 	// Resize window for big map

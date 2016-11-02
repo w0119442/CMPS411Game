@@ -5,6 +5,7 @@
 </head>
 
 <body>
+  <div>
 	<div id="themeDiv">
 		<button id="tankTheme">Tank</button>
 		<button id="bookTheme">Book</button>
@@ -14,11 +15,17 @@
 	</div>
 	
 	<div id="soundDiv">
-		<button id="muteSound"><img id="soundImage" src="/client/img/soundOn.png" /></button>
+		<button id="muteSound"><img id="soundImage" src="/client/img/soundOn.png" /></button>	
+		<button id="miniMapButton"><img id="miniMapImage" src="/client/img/mapIcon.png" /></button>	
+	</div>
+  </div>	
+	
+	<div style="position:relative; clear:both;">
+		<canvas id="ctx" style="position:absolute; left:0; top:0; z-index:0;"></canvas>	
+		<canvas id="miniMap" style="position:absolute; right:0; z-index:1; border:1px; display:none;"></canvas>
 	</div>
 	
-	<canvas id="ctx"></canvas>
-	<canvas id="worldMap" width="3000" height="3000" style="display:none;"></canvas>
+	<canvas id="worldMap" width="3000" height="3000" style="display:none;"></canvas>		
 	
 	<script src="https://cdn.socket.io/socket.io-1.4.8.js"></script>
 </body>
@@ -35,7 +42,7 @@
 	var clientWidth = window.innerWidth;
 	var clientHeight = window.innerHeight;
 	var VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
-	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;
+	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;	
 	
 	// Set up world map
 	var worldMapCanvas = document.getElementById("worldMap");
@@ -57,8 +64,25 @@
 		ctx.fillStyle = patrnBack;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	}
-</script>
 	
+	// Set up miniMap
+	var miniMap = document.getElementById("miniMap").getContext("2d");
+	miniMap.canvas.width = VIEW_WIDTH/3;
+	miniMap.canvas.height = VIEW_HEIGHT/3;
+	miniMap.canvas.style.top =""+2*miniMap.canvas.height+"px";
+	miniMap.globalAlpha = 0.5;
+	
+	miniMap.fillRect(0, 0, miniMap.canvas.width, miniMap.canvas.height);
+	
+	// Initialize all the themes to lessen load time during game play
+	setTheme("Octopus");
+	setTheme("UFO");
+	setTheme("Spider");
+	setTheme("Book");
+	setTheme("Tank");
+</script>
+
+<script src="/client/js/miniMap.js"></script>	
 <script src="/client/js/positions.js"></script>
 <script src="/client/js/events.js"></script>
 </html>

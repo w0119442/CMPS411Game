@@ -40,13 +40,6 @@
 	ctx.canvas.height = clientHeight;
 	ctx.font = '30px Arial';
 	
-	/*
-	socket.on('init',function(data) {
-		if(data.selfAdd) {
-			clientId = data.selfAdd;	
-		}
-	});*/
-	
 	socket.on('newPositions',function(data) {
 		drawMap();
 		
@@ -54,31 +47,10 @@
 		cntTeam1 = 0;
 		cntPlayers = 0;
 		
-		/*
-		var index = -1;
-		for(var i in data.player) {
-			if (data.player[i].add == clientId) {
-				index = data.player[i].id;
-				break;
-			}
-		}
-		
-		if(index != -1) {
-			team = data.player[index].team;
-		}*/
-		
 		for(var i in data.player) {	
 			cntPlayers++;
 			if(data.player[i].alive) {
-				drawPlayers(false, data.player[i].x, data.player[i].y, data.player[i].team);
-			/*
-				if(data.player[i].id != data.player[index].id) {
-					drawPlayers(false, data.player[i].x, data.player[i].y, data.player[i].team);
-				}
-				else {
-					drawPlayers(true, data.player[i].x, data.player[i].y, data.player[i].team);			
-				}
-			*/
+				drawPlayers(data.player[i].x, data.player[i].y, data.player[i].team);
 			}
 		}
 		
