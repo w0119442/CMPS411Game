@@ -27,7 +27,7 @@
 		}
 		
 		miniMap.beginPath();
-		miniMap.arc(xCoord, yCoord, 4, 0, 2*Math.PI);
+		miniMap.arc(xCoord, yCoord, 5, 0, 2*Math.PI);
 		miniMap.fillStyle = color;
 		miniMap.fill();
 		
@@ -40,37 +40,6 @@
 			miniMap.stroke();
 		} 		
 	}
-	
-	// Function for drawing players as circles for big map
-	function drawPlayers(playerX, playerY, pTeam) {
-		var xCoord = 0;
-		var yCoord = 0;
-		var hpColorN = "#990012";
-		var hpColorY = "#6CC417";
-		var color = "#FFFFFF";
-		
-		var scaleX = (clientWidth - 2 * borderSize)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
-		var scaleY = (clientHeight - 2 * borderSize - divHeight)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
-		
-		xCoord = Math.floor(scaleX * (playerX + PLAYER_SIZE/2) + borderSize);
-		yCoord = Math.floor(scaleY * (playerY + PLAYER_SIZE/2) + borderSize);
-		
-		if(team == pTeam) {
-			color = hpColorY;
-			cntTeam0++;
-		}
-		else {
-			color = hpColorN;
-			cntTeam1++;
-		}
-		
-		ctx.beginPath();
-		ctx.arc(xCoord, yCoord, radius, 0, 2*Math.PI);
-		ctx.fillStyle = color;
-		ctx.fill();
-		ctx.strokeStyle = color;
-		ctx.stroke()
-	}	
 	
 	// Function for drawing the hp bar
 	function drawHP(botX, botY, team, p) {
@@ -133,3 +102,34 @@
 		ctx.rect(0, 0, clientWidth, clientHeight);
 		ctx.stroke();
 	}
+	
+// Function for drawing players as circles for big map
+	function drawPlayers(playerX, playerY, pTeam) {
+		var xCoord = 0;
+		var yCoord = 0;
+		var hpColorN = "#990012";
+		var hpColorY = "#6CC417";
+		var color = "#FFFFFF";
+		
+		var scaleX = (clientWidth - 2 * borderSize)/(WORLD_WIDTH * MAP_WRAP_NUMBER);
+		var scaleY = (clientHeight - 2 * borderSize - divHeight)/(WORLD_HEIGHT * MAP_WRAP_NUMBER);
+		
+		xCoord = Math.floor(scaleX * (playerX + PLAYER_SIZE/2) + borderSize);
+		yCoord = Math.floor(scaleY * (playerY + PLAYER_SIZE/2) + borderSize);
+		
+		if(team == pTeam) {
+			color = hpColorY;
+			cntTeam0++;
+		}
+		else {
+			color = hpColorN;
+			cntTeam1++;
+		}
+		
+		ctx.beginPath();
+		ctx.arc(xCoord, yCoord, radius, 0, 2*Math.PI);
+		ctx.fillStyle = color;
+		ctx.fill();
+		ctx.strokeStyle = color;
+		ctx.stroke()
+	}		

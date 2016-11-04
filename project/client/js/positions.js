@@ -145,8 +145,8 @@
 		
 		for(var i = 0; i < data.flag.length; i++) {
 			if(Math.abs(pCenterX - data.flag[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.flag[i].y) < VIEW_HEIGHT) {
-				var flagX = data.flag[i].x - pCenterX + pOffsetX;
-				var flagY = data.flag[i].y - pCenterY + pOffsetY;
+				var flagX = data.flag[i].x - pCenterX + pOffsetX - 8;
+				var flagY = data.flag[i].y - pCenterY + pOffsetY - 10;
 
 				ctx.drawImage(Img.flag, flagX, flagY);	
 			}

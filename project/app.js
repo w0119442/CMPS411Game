@@ -60,7 +60,7 @@ io.sockets.on('connection', function(socket) {
 	}
 	console.log("Address: " + address);
 	
-	if(address == undefined || ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && playerCount < 100) {
+	if(address == undefined || ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && ipAdd.length < 100) {
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
@@ -85,10 +85,7 @@ var playerRef = require("./player");
 var Player = playerRef.Player;	
 Player.list = listsRef.playerList;
 
-var playerCount = 0;
-
 Player.onConnect = function(socket, add){
-	playerCount++;
 	var player = Player(socket.id, add);
 	socket.on('keyPress', function(data) {
 		if(data.inputId == 'left') {
@@ -120,7 +117,6 @@ Player.onConnect = function(socket, add){
 	});
 }
 Player.onDisconnect = function(socket, address){
-	playerCount--;	
 	for(var i in Flag.list) {
 		var flag = Flag.list[i];
 		if(flag.carrierId == socket.id){
