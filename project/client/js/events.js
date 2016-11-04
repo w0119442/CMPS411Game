@@ -36,6 +36,12 @@
 		Snd.shoot.play();
 	}
 	
+	miniMap.canvas.onclick = function(event){
+		socket.emit('keyPress',{inputId:'attack',state:true});
+		Snd.shoot.currentTime = 0;
+		Snd.shoot.play();
+	}	
+	
 	document.onblur = function(event){
 		socket.emit('keyPress',{inputId:'lostFocus',state:true});
 	}
@@ -46,3 +52,10 @@
 		var angle = Math.atan2(y,x)/ Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
+	
+	miniMap.canvas.onmousemove = function(event){
+		var x = event.clientX - (pOffsetX + ctx.canvas.offsetLeft);
+		var y = event.clientY - (pOffsetY + ctx.canvas.offsetTop);
+		var angle = Math.atan2(y,x)/ Math.PI * 180;
+		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+	}	
