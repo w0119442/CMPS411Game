@@ -1,15 +1,9 @@
-#ctx {
-    /* border: 10px solid transparent; */
-    /* padding: 15px; */
-    /* -webkit-border-image: url(../img/Tank/bgtile.png) 30 round; /* Safari 3.1-5 */ */
-    /* -o-border-image: url(../img/Tank/bgtile.png) 30 round; /* Opera 11-12.1 */ */
-    /* border-image: url(../img/Tank/bgtile.png) 30 round; */
-     display:block; 
-     margin:0 auto; 
-	 padding: 0; 
-	 position: absolute; 
-     top: 0; 
-     bottom: 0; 
-     left: 0; 
-     right: 0; 
+image, canvas {
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
 }

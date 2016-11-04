@@ -2,6 +2,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="./client/css/buttonStyles.css" /> 
+	<link rel="stylesheet" type="text/css" href="./client/css/canvasStyles.css" /> 	
 </head>
 
 <body>
@@ -23,6 +24,18 @@
 	<div style="position:relative; clear:both;">
 		<canvas id="ctx" style="position:absolute; left:0; top:0; z-index:0;"></canvas>	
 		<canvas id="miniMap" style="position:absolute; z-index:1; border:1px; display:none;"></canvas>
+	</div>
+	
+	<div id="mobileButtons" style="position:absolute; bottom:0; float:left; display:none;">
+		<button id="mobileUpLeft" class="btn"> \ </button>
+		<button id="mobileUp" class="btn"> U </button>
+		<button id="mobileUpRight" class="btn"> / </button></br>
+		<button id="mobileLeft" class="btn"> L </button>
+		<button id="mobileNull" class="btn">  </button>
+		<button id="mobileRight" class="btn"> R </button></br>
+		<button id="mobileDownLeft" class="btn"> / </button>
+		<button id="mobileDown" class="btn"> D </button>
+		<button id="mobileDownRight" class="btn"> \ </button>		
 	</div>
 	
 	<canvas id="worldMap" width="3000" height="3000" style="display:none;"></canvas>		
