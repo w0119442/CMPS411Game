@@ -10,7 +10,6 @@ var Projectile = projectileRef.Projectile;
 		var self = {};
 		self.id = id;
 		self.address = add;
-//		self.team = listsRef.playerCount() % 2;
 		self.team = listsRef.playerTeam();
 		self.pressLeft = false;
 		self.pressRight = false;

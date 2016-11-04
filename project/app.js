@@ -84,6 +84,7 @@ io.sockets.on('connection', function(socket) {
 var playerRef = require("./player");
 var Player = playerRef.Player;	
 Player.list = listsRef.playerList;
+var botRef = require("./bot");
 
 Player.onConnect = function(socket, add){
 	var player = Player(socket.id, add);
@@ -134,6 +135,10 @@ Player.update = function(){
 	var playPackage = {};
 	for(var i in Player.list) {
 		var player = Player.list[i];
+		if(player.id >= 1) {
+			listsRef.botList[player.id].fireDelay++;
+			botRef.actionBots(player.id);
+		}
 		if (player.hp < 1){
 			if (player.deathTimer++ > 100){
 				player.respawn();
@@ -160,6 +165,11 @@ Player.update = function(){
 	}
 	return playPackage;
 }
+
+// ******** BOT MODULE ****************************
+var botsRef = require("./bots");
+
+botsRef.createBots();
 
 // ******** PROJECTILE MODULE ****************************
 var projectileRef = require("./projectile");

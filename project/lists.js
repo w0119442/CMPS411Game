@@ -9,12 +9,20 @@ var Projectile = projectileRef.Projectile;
 var flagRef = require("./flag");
 var Flag = flagRef.Flag;
 
+var botsRef = require("./bots");
+var Bot = botsRef.Bot;
+
 Player.list = {};
 Projectile.list = {};
 Flag.list = {};
+Bot.list = {};
 
 (function(){
 	module.exports.playerList = Player.list;
+	module.exports.projectileList = Projectile.list;
+	module.exports.flagList = Flag.list;	
+	module.exports.botList = Bot.list;
+	
 	module.exports.playerTeam = function(){
 		var count0 = 0;
 		var count1 = 0;
@@ -35,8 +43,6 @@ Flag.list = {};
 			return 1;
 		}
 	}
-	module.exports.projectileList = Projectile.list;
-	module.exports.flagList = Flag.list;
 }());
 
 /*
