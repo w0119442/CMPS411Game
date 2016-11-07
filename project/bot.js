@@ -14,6 +14,15 @@ var Flag = flagRef.Flag;
 var listsRef = require("./lists");
 
 (function() {
+	
+	module.exports.resetBot = function(index) {
+		var pKills = listsRef.playerList[index].playerKills;
+		var isAlive = listsRef.playerList[index].alive;
+		
+		if(pKills > 25 && !isAlive) {
+			listsRef.playerList[index].playerKills = 0;
+		}
+	}
 
 	module.exports.actionBots = function(index) {
 		var playerX = listsRef.playerList[index].x;

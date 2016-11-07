@@ -31,7 +31,7 @@ app.use('/client',express.static(__dirname + '/client'));
 app.use('/server',express.static(__dirname + '/server'));
 app.use('/css',express.static('client/css'));
 
-serv.listen(2000); // change back to 80 for server
+serv.listen(8080); // change back to 80 for server
 console.log("Server started.");
 
 
@@ -138,6 +138,7 @@ Player.update = function(){
 		if(player.id >= 1) {
 			listsRef.botList[player.id].fireDelay++;
 			botRef.actionBots(player.id);
+			botRef.resetBot(player.id);
 		}
 		if (player.hp < 1){
 			if (player.deathTimer++ > 100){
