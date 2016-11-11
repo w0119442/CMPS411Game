@@ -31,7 +31,7 @@ var listsRef = require("./lists");
 		var destY = listsRef.botList[index].destY;
 		var playerTeam = listsRef.playerList[index].team;		
 		
-		var viewRange = 100;
+		var viewRange = 50;
 		
 		if(Math.abs(playerX - destX) > 10 && Math.abs(playerY - destY) > 10) {
 			if(playerX - destX == 0) {

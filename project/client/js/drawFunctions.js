@@ -33,11 +33,14 @@
 		
 		if(!isPlayer) {
 			miniMap.strokeStyle = color;
+			miniMap.lineWidth = 1;
 			miniMap.stroke()
 		}
 		else {
-			miniMap.strokestyle = "#000000";
+			miniMap.strokeStyle = "#ffff00";
+			miniMap.lineWidth = 3;
 			miniMap.stroke();
+			miniMap.lineWidth = 1;
 		} 		
 	}
 	
