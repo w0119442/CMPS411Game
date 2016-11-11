@@ -26,7 +26,7 @@
 		<canvas id="miniMap" style="position:absolute; z-index:1; border:1px; display:none;"></canvas>
 	</div>
 	
-	<div id="mobileButtons" style="position:absolute; bottom:0; float:left; display:none;">
+	<div id="mobileButtons" style="position:absolute; float:left; display:none;">
 		<button id="mobileUpLeft" class="btn"> \ </button>
 		<button id="mobileUp" class="btn"> U </button>
 		<button id="mobileUpRight" class="btn"> / </button></br>
@@ -88,6 +88,17 @@
 	miniMap.globalAlpha = 0.5;
 	
 	miniMap.fillRect(0, 0, miniMap.canvas.width, miniMap.canvas.height);
+	
+	var mobileButtons = document.getElementById("mobileButtons");
+	mobileButtons.width = VIEW_WIDTH/3;
+	mobileButtons.height = VIEW_HEIGHT/3;
+	/*
+	var mButtons = document.getElementsByClassName("btn");
+	for(var i in mButtons) {
+		mButtons[i].height = Math.floor(mobileButtons.height/3);
+		mButtons[i].width = Math.floor(mobileButtons.width/3);
+	}*/
+	mobileButtons.style.top = "" + 2*miniMap.canvas.height + "px";
 	
 	// Initialize all the themes to lessen load time during game play
 	setTheme("Octopus");
