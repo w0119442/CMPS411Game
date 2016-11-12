@@ -72,7 +72,7 @@ var listsRef = require("./lists");
 		
 		for(var i in listsRef.playerList) {
 			if(listsRef.playerList[i].id != index) {
-				var fireLimit = Math.floor(30 * Math.random()) + 10;
+				var fireLimit = Math.floor(20 * Math.random()) + 5;
 				
 				var otherTeam = listsRef.playerList[i].team;
 				var otherX = listsRef.playerList[i].x;

@@ -8,7 +8,6 @@ function detectMob() {
 }
 
 function mobileKeypad() {
-	mobileButtons.style.display = "block";
 	
 	mobileUpLeft.onclick = function() {
 		socket.emit('keyPress',{inputId:'up', state:true});

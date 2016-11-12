@@ -106,7 +106,7 @@
 		ctx.stroke();
 	}
 	
-// Function for drawing players as circles for big map
+	// Function for drawing players as circles for big map
 	function drawPlayers(playerX, playerY, pTeam) {
 		var xCoord = 0;
 		var yCoord = 0;
@@ -135,4 +135,18 @@
 		ctx.fill();
 		ctx.strokeStyle = color;
 		ctx.stroke()
-	}		
+	}
+
+	// Function for resizing buttons
+	function buttonResize(buttons) {
+		for(var i = 0; i < buttons.length; i++) {
+			var oldWidth = buttons[i].offsetWidth;
+			var oldHeight = buttons[i].offsetHeight;
+			var newWidth = oldWidth * ratio;
+			var newHeight = oldHeight * ratio;
+			var fontRatio = 0.6 * Math.min(newWidth, newHeight);			
+			buttons[i].style.width = "" + newWidth + "px";
+			buttons[i].style.height = "" + newHeight + "px";
+			buttons[i].style.fontSize = "" + fontRatio + "px";
+		}
+	}

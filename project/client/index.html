@@ -24,18 +24,17 @@
 	<div style="position:relative; clear:both;">
 		<canvas id="ctx" style="position:absolute; left:0; top:0; z-index:0;"></canvas>	
 		<canvas id="miniMap" style="position:absolute; z-index:1; border:1px; display:none;"></canvas>
-	</div>
-	
-	<div id="mobileButtons" style="position:absolute; float:left; display:none;">
-		<button id="mobileUpLeft" class="btn"> \ </button>
-		<button id="mobileUp" class="btn"> U </button>
-		<button id="mobileUpRight" class="btn"> / </button></br>
-		<button id="mobileLeft" class="btn"> L </button>
-		<button id="mobileNull" class="btn">  </button>
-		<button id="mobileRight" class="btn"> R </button></br>
-		<button id="mobileDownLeft" class="btn"> / </button>
-		<button id="mobileDown" class="btn"> D </button>
-		<button id="mobileDownRight" class="btn"> \ </button>		
+		<div id="mobileButtons" style="position:absolute; float: left; display:none;">
+			<button id="mobileUpLeft" class="btn"> \ </button>
+			<button id="mobileUp" class="btn"> U </button>
+			<button id="mobileUpRight" class="btn"> / </button></br>
+			<button id="mobileLeft" class="btn"> L </button>
+			<button id="mobileNull" class="btn">  </button>
+			<button id="mobileRight" class="btn"> R </button></br>
+			<button id="mobileDownLeft" class="btn"> / </button>
+			<button id="mobileDown" class="btn"> D </button>
+			<button id="mobileDownRight" class="btn"> \ </button>		
+		</div>
 	</div>
 	
 	<canvas id="worldMap" width="3000" height="3000" style="display:none;"></canvas>		
@@ -53,10 +52,23 @@
 	
 	// Alter Viewport so the border fits nicely
 	window.addEventListener("resize", resizeFunction);
+	
 	var clientWidth = window.innerWidth;
-	var clientHeight = window.innerHeight;
-	var VIEW_WIDTH = Math.floor(clientWidth * .9 / BORDER_SIZE) * BORDER_SIZE;
-	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / BORDER_SIZE) * BORDER_SIZE;	
+	var clientHeight = window.innerHeight;	
+	var ratio = window.devicePixelRatio || 1;
+	
+	// Show mobile keypad
+	var mobileButtons = document.getElementById("mobileButtons");		
+	if(detectMob()) {
+		mobileButtons.style.display = "block";
+	}	
+
+	// Resize buttons
+	var buttons = document.getElementsByTagName("button");
+	buttonResize(buttons);		
+	
+	var VIEW_WIDTH = Math.floor(clientWidth * .9 / (BORDER_SIZE)) * BORDER_SIZE;
+	var VIEW_HEIGHT = Math.floor(clientHeight * .9 / (BORDER_SIZE)) * BORDER_SIZE;	
 	
 	// Set up world map
 	var worldMapCanvas = document.getElementById("worldMap");
@@ -79,6 +91,16 @@
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	}
 	
+	// Set up mobile keypad
+	if(detectMob()) {
+		var dButtonSize = document.getElementById("mobileNull").offsetHeight;
+		mobileButtons.height = 3 * dButtonSize;
+		//mobileButtons.style.top = "" + Math.floor(ctx.canvas.height/mobileButtons.height)*mobileButtons.height + "px";
+		//mobileButtons.style.top = "" + mobileButtons.height + "px";
+		mobileButtons.style.top = "" + (2/3*ctx.canvas.height) + "px";
+		mobileButtons.style.opacity = "0.7";
+	}		
+	
 	// Set up miniMap
 	var miniMap = document.getElementById("miniMap").getContext("2d");
 	miniMap.canvas.width = VIEW_WIDTH/3;
@@ -88,17 +110,6 @@
 	miniMap.globalAlpha = 0.5;
 	
 	miniMap.fillRect(0, 0, miniMap.canvas.width, miniMap.canvas.height);
-	
-	var mobileButtons = document.getElementById("mobileButtons");
-	mobileButtons.width = VIEW_WIDTH/3;
-	mobileButtons.height = VIEW_HEIGHT/3;
-	/*
-	var mButtons = document.getElementsByClassName("btn");
-	for(var i in mButtons) {
-		mButtons[i].height = Math.floor(mobileButtons.height/3);
-		mButtons[i].width = Math.floor(mobileButtons.width/3);
-	}*/
-	mobileButtons.style.top = "" + 2*miniMap.canvas.height + "px";
 	
 	// Initialize all the themes to lessen load time during game play
 	setTheme("Octopus");
