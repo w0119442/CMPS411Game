@@ -58,4 +58,8 @@
 		var y = event.clientY - (pOffsetY + ctx.canvas.offsetTop);
 		var angle = Math.atan2(y,x)/ Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
-	}	
+	}
+	
+	function setNickname(){
+		socket.emit('setNickname',{value:document.getElementById('newNickname').value});
+	}

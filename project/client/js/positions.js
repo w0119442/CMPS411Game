@@ -84,6 +84,10 @@
 				var bottomY = pOffsetY + PLAYER_SIZE/2;
 				drawHP(bottomX, bottomY, playerTeam, data.player[i]);
 				
+				// Draw player name
+					var playerName = data.player[i].nickname;
+					ctx.fillText(playerName, pOffsetX - 25, pOffsetY - 25);
+				
 				// Draw kill count (temp / test)
 				var killCount = "" + data.player[i].playerKills;
 				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
@@ -104,6 +108,10 @@
 					var otherY = data.player[i].y - pCenterY + pOffsetY;
 					drawHP(otherX, otherY + PLAYER_SIZE, playerTeam, data.player[i]);
 				
+					// Draw player name
+					var playerName = data.player[i].nickname;
+					ctx.fillText(playerName, otherX - 25, otherY - 15);
+					
 					// Draw kill count (temp / test)
 					var killCount = "" + data.player[i].playerKills;
 					ctx.fillText(killCount, otherX + 25, otherY - 5);

@@ -116,6 +116,9 @@ Player.onConnect = function(socket, add){
 			player.mouseAngle = data.state;
 		}
 	});
+	socket.on('setNickname', function(data) {
+		player.nickname = data.value;
+	});
 }
 Player.onDisconnect = function(socket, address){
 	for(var i in Flag.list) {
@@ -162,6 +165,7 @@ Player.update = function(){
 			team:player.team,
 			alive:player.alive,
 			playerKills:player.playerKills,
+			nickname:player.nickname,
 		};
 	}
 	return playPackage;

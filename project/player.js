@@ -9,6 +9,7 @@ var Projectile = projectileRef.Projectile;
 	var Player = function(id, add) {
 		var self = {};
 		self.id = id;
+		self.nickname = "testName";
 		self.address = add;
 		self.team = listsRef.playerTeam();
 		self.pressLeft = false;
