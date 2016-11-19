@@ -85,12 +85,16 @@
 				drawHP(bottomX, bottomY, playerTeam, data.player[i]);
 				
 				// Draw player name
-					var playerName = data.player[i].nickname;
-					ctx.fillText(playerName, pOffsetX - 25, pOffsetY - 25);
+				var playerName = data.player[i].nickname;
+				var nameLength = playerName.length;
+				var startName = (pOffsetX - PLAYER_SIZE/2) + (1 - nameLength/6) * (PLAYER_SIZE/2);
+				ctx.font = '15px Arial';
+				ctx.fillText(playerName, startName, pOffsetY - 25);
 				
 				// Draw kill count (temp / test)
 				var killCount = "" + data.player[i].playerKills;
-				ctx.fillText(killCount, pOffsetX + 25, pOffsetY -5);
+				ctx.font = '30px Arial';
+				ctx.fillText(killCount, pOffsetX + PLAYER_SIZE/2, pOffsetY -5);
 				
 				if(data.player[i].playerKills > pKills) {
 					Snd.death.currentTime = 0;
@@ -110,11 +114,15 @@
 				
 					// Draw player name
 					var playerName = data.player[i].nickname;
-					ctx.fillText(playerName, otherX - 25, otherY - 15);
+					var nameLength = playerName.length;
+					var startName = (otherX - PLAYER_SIZE/2) + (1 - nameLength/6) * (PLAYER_SIZE/2);					
+					ctx.font = '15px Arial';
+					ctx.fillText(playerName, startName, otherY - 25);
 					
 					// Draw kill count (temp / test)
 					var killCount = "" + data.player[i].playerKills;
-					ctx.fillText(killCount, otherX + 25, otherY - 5);
+					ctx.font = '30px Arial';
+					ctx.fillText(killCount, otherX + PLAYER_SIZE/2, otherY - 5);
 				
 					// Draw player base and player top
 					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);

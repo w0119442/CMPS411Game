@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  <div>
+  <div style="position:relative">
 	<div id="themeDiv">
 		<button id="tankTheme">Tank</button>
 		<button id="bookTheme">Book</button>
@@ -14,10 +14,10 @@
 		<button id="ufoTheme">UFO</button>
 		<button id="octopusTheme">Octopus</button>		
 	</div>
-	<div id="nameDiv">
-			nickname: <input type="text" id="newNickname"><br>
-			<button onclick="setNickname()">Set</button>		
-	</div>
+	<span class="nameDiv">
+			<input type="text" placeholder="Name (six characters)" 	maxlength="6" id="newNickname">
+			<button id="setName" onclick="setNickname()">Set</button>		
+	</span>
 	<div id="soundDiv">
 		<button id="muteSound"><img id="soundImage" src="/client/img/soundOn.png" /></button>	
 		<button id="miniMapButton"><img id="miniMapImage" src="/client/img/mapIcon.png" /></button>	
