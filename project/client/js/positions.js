@@ -161,10 +161,11 @@
 		
 		for(var i = 0; i < data.flag.length; i++) {
 			if(Math.abs(pCenterX - data.flag[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.flag[i].y) < VIEW_HEIGHT) {
-				var flagX = data.flag[i].x - pCenterX + pOffsetX - 8;
-				var flagY = data.flag[i].y - pCenterY + pOffsetY - 10;
+				var flagSize = PLAYER_SIZE/2;
+				var flagX = data.flag[i].x - pCenterX + pOffsetX - 10;
+				var flagY = data.flag[i].y - pCenterY + pOffsetY - 5;
 
-				ctx.drawImage(Img.flag, flagX, flagY);	
+				ctx.drawImage(Img.flag, flagX, flagY, flagSize, flagSize);	
 			}
 		}
 		
