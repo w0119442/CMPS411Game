@@ -5,6 +5,8 @@ var serv = require('http').Server(app);
 var listsRef = require("./lists");
 var globals = require("./globals");
 
+
+var score = [];
 app.use(cookieParser());
 
 //set cookie
@@ -42,10 +44,13 @@ setInterval(function() {
 		projectile:Projectile.update(),
 		flag:Flag.update(),
 		base:Base.update(),
+		score:score,
 	}
 	//console.log("base 0's x: " + playPackage.base[0].x);
 	//console.log("base 1's x: " + playPackage.base[1].x);
-	
+	for (var i in score) {
+		console.log(score[i].name + ": " + score[i].kills);
+	}
 
 	io.emit('newPositions', playPackage);
 }, 1000/25);
@@ -140,6 +145,7 @@ Player.onDisconnect = function(socket, address){
 
 Player.update = function(){
 	var playPackage = {};
+	score = [];
 	for(var i in Player.list) {
 		var player = Player.list[i];
 		if(player.id >= 1) {
@@ -177,8 +183,21 @@ Player.update = function(){
 			playerKills:player.playerKills,
 			nickname:player.nickname,
 		};
+		score.push({
+				name:player.nickname,
+				kills:player.playerKills
+		});
+		score.sort(sortFuntion);
 	}
 	return playPackage;
+}
+function sortFuntion(a,b){
+	if (a.kills === b.kills){
+		return 0;
+	}
+	else {
+		return (a.kills < b.kills ? 1 : -1);
+	}
 }
 
 // ******** BOT MODULE ****************************

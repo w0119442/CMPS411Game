@@ -180,5 +180,5 @@
 				ctx.drawImage(Img.flag, flagX, flagY, flagSize, flagSize);	
 			}
 		}
-		
+		showScore(data.score);
 	});

@@ -12,6 +12,7 @@ var listsRef = require("./lists");
 		self.fireDelay = 0;
 		
 		listsRef.botList[id] = self;
+		listsRef.playerList[id].nickname = "Bot"+id;
 		return self;
 	}
 	
