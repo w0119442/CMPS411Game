@@ -41,7 +41,11 @@ setInterval(function() {
 		player:Player.update(),
 		projectile:Projectile.update(),
 		flag:Flag.update(),
+		base:Base.update(),
 	}
+	//console.log("base 0's x: " + playPackage.base[0].x);
+	//console.log("base 1's x: " + playPackage.base[1].x);
+	
 
 	io.emit('newPositions', playPackage);
 }, 1000/25);
@@ -219,6 +223,33 @@ Flag.update = function(){
 			x:flag.x,
 			y:flag.y,
 		});
+	}
+	return playPackage;
+}
+
+// ******** BASE MODULE ****************************
+var baseRef = require("./base");
+
+var Base = baseRef.Base;
+
+Base.list = listsRef.baseList;
+baseRef.Base(0);
+baseRef.Base(1);
+//console.log(Base);
+
+Base.update = function(){
+	var playPackage = {};
+	for(var i in Base.list) {
+		//console.log('update base ' + i);
+		var base = Base.list[i];
+		if(base.bombCollision()){
+			base.hp--;
+		}
+		playPackage[i] ={
+			x:base.x,
+			y:base.y,
+			hp:base.hp,
+		};
 	}
 	return playPackage;
 }

@@ -11,7 +11,7 @@ var Projectile = projectileRef.Projectile;
 		self.id = id;
 		self.nickname = "";
 		self.address = add;
-		self.team = listsRef.playerTeam();
+		self.team = listsRef.playerTeam();		
 		self.pressLeft = false;
 		self.pressRight = false;
 		self.pressDown = false;
@@ -26,8 +26,15 @@ var Projectile = projectileRef.Projectile;
 		self.playerKills = 0;
 		self.size = 50;
 		self.radius = self.size / 2;
-		self.x = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
-		self.y = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
+		//self.x = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
+		//self.y = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
+		if (self.team == 0){
+			self.x = self.size;
+		}
+		else{
+			self.x = globals.MAP_SIZE - self.size;
+		}
+		self.y = globals.MAP_SIZE / 2;
 		
 		console.log("team " + self.team);
 		
@@ -35,8 +42,13 @@ var Projectile = projectileRef.Projectile;
 			self.alive = true;
 			self.hp = 3;
 			self.deathTimer = 0;
-			self.x = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
-			self.y = Math.floor((globals.MAP_SIZE - self.size) * Math.random());
+			if (self.team == 0){
+				self.x = self.size;
+			}
+			else{
+				self.x = globals.MAP_SIZE - self.size;
+			}
+			self.y = globals.MAP_SIZE / 2;
 		}
 		
 		self.updatePosition = function() {		

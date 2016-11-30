@@ -138,6 +138,17 @@
 			}
 		}
 		
+		//draw base
+		for(var i in data.base){
+			if(Math.abs(pCenterX - data.base[i].x) < VIEW_WIDTH && Math.abs(pCenterY - data.base[i].y) < VIEW_HEIGHT) {
+				var flagSize = PLAYER_SIZE/2;
+				var baseX = data.base[i].x - pCenterX + pOffsetX;
+				var baseY = data.base[i].y - pCenterY + pOffsetY;
+
+				ctx.drawImage(Img.base, baseX, baseY, 200, 200);	
+			}
+		}
+		
 		if(miniMapOn) {
 			var isPlayer = false;
 			miniMap.clearRect(0, 0, miniMap.canvas.width, miniMap.canvas.height);

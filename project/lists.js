@@ -12,16 +12,21 @@ var Flag = flagRef.Flag;
 var botsRef = require("./bots");
 var Bot = botsRef.Bot;
 
+var baseRef = require("./base");
+var Base = baseRef.Base;
+
 Player.list = {};
 Projectile.list = {};
 Flag.list = {};
 Bot.list = {};
+Base.list = {};
 
 (function(){
 	module.exports.playerList = Player.list;
 	module.exports.projectileList = Projectile.list;
 	module.exports.flagList = Flag.list;	
 	module.exports.botList = Bot.list;
+	module.exports.baseList = Base.list;
 	
 	module.exports.playerTeam = function(){
 		var count0 = 0;
