@@ -150,3 +150,4 @@
 			buttons[i].style.fontSize = "" + fontRatio + "px";
 		}
 	}
+	//Function f
