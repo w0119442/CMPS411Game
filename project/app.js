@@ -44,7 +44,7 @@ setInterval(function() {
 		projectile:Projectile.update(),
 		flag:Flag.update(),
 		base:Base.update(),
-		score:score
+		score:score,
 	}
 	//console.log("base 0's x: " + playPackage.base[0].x);
 	//console.log("base 1's x: " + playPackage.base[1].x);
@@ -196,7 +196,7 @@ function sortFuntion(a,b){
 		return 0;
 	}
 	else {
-		return (a.kills < b.kills ? -1 : 1);
+		return (a.kills < b.kills ? 1 : -1);
 	}
 }
 

@@ -150,4 +150,14 @@
 			buttons[i].style.fontSize = "" + fontRatio + "px";
 		}
 	}
-	//Function f
+	//Function for showing score
+	function showScore(score){
+		for (var i= 0; i < 10;i++){
+			scoreText = score[i].name + ": " + score[i].kills;
+			
+			ctx.font = '15px Arial';
+			ctx.fillStyle = 'black';
+			ctx.fillText(scoreText, 30 ,(16*i)+30);
+
+		}
+	}
