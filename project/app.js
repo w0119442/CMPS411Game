@@ -31,7 +31,7 @@ app.use('/client',express.static(__dirname + '/client'));
 app.use('/server',express.static(__dirname + '/server'));
 app.use('/css',express.static('client/css'));
 
-serv.listen(8080); // change back to 80 for server
+serv.listen(80); // change back to 80 for server
 console.log("Server started.");
 
 

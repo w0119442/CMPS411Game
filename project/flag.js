@@ -30,6 +30,12 @@ var listsRef = require("./lists");
 					if(self.getDistance(player) < player.radius){
 						//pickup detected
 						self.carrierId = player.id;
+						if (player.id >=1){
+							listsRef.botList[player.id].destX = listsRef.baseList[1-player.team].x;
+							listsRef.botList[player.id].destY = listsRef.baseList[1-player.team].y;
+							console.log("Team: "+ player.team);
+							console.log("baseX: "+ listsRef.baseList[1-player.team].x);
+						}
 					}
 				}
 			}

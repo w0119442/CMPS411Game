@@ -35,13 +35,15 @@ var listsRef = require("./lists");
 			for(var i in listsRef.flagList) {				
 				var bombX = listsRef.flagList[i].x + listsRef.flagList[i].radius;
 				var bombY = listsRef.flagList[i].y + listsRef.flagList[i].radius;
-				console.log("bomb x distance to base " + self.team + ": " + (baseCenterX - bombX));
-				console.log("bomb y distance to base " + self.team + ": " + (baseCenterY - bombY));
-				console.log("bomb trigger distance " + self.team + ": " + (self.radius + listsRef.flagList[i].radius));
+				//console.log("bomb x distance to base " + self.team + ": " + (baseCenterX - bombX));
+				//console.log("bomb y distance to base " + self.team + ": " + (baseCenterY - bombY));
+				//console.log("bomb trigger distance " + self.team + ": " + (self.radius + listsRef.flagList[i].radius));
 
 				if(Math.abs(baseCenterX - bombX) < (self.radius + listsRef.flagList[i].radius) && Math.abs(baseCenterY - bombY) < (self.radius + listsRef.flagList[i].radius)){
 					//collision between bomb and base detected	
+					console.log('boom!');
 					bombCollide = true;
+					listsRef.flagList[i].carrierId = null;
 					listsRef.flagList[i].x = (globals.MAP_SIZE / 2) + listsRef.flagList[i].radius;
 					listsRef.flagList[i].y = (globals.MAP_SIZE / 2) + listsRef.flagList[i].radius;
 				}
