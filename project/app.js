@@ -255,6 +255,7 @@ Base.update = function(){
 			x:base.x,
 			y:base.y,
 			hp:base.hp,
+			team:base.team,
 		};
 	}
 	return playPackage;

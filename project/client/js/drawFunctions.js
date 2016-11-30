@@ -64,6 +64,26 @@
 		ctx.strokeRect(botX, botY, HP * hpWidth, hpHeight);
 	}
 	
+	// Function for drawing the hp bar for bases
+	function drawBaseHP(botX, botY, team, b) {
+		var hpHeight = 10;
+		var hpWidth = Math.floor(200/HP);
+
+		for(var j = 0; j < b.hp; j++) {
+			if(b.team == team) {
+				ctx.fillStyle = hpColorY;
+			}
+			else {
+				ctx.fillStyle = hpColorN;
+			}
+			ctx.fillRect(botX + hpWidth * j, botY, hpWidth, hpHeight);
+		}
+		
+		ctx.strokeStyle = hpLine;
+		ctx.lineWidth = 3;
+		ctx.strokeRect(botX, botY, HP * hpWidth, hpHeight);
+	}
+	
 	// Resize window for game
 	function resizeFunction() {
 		clientWidth = window.innerWidth;

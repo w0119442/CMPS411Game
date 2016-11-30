@@ -38,6 +38,9 @@ var Player = playerRef.Player;
 						player.hp--;
 						if (player.hp < 1){
 							listsRef.playerList[self.shooterId].playerKills++;
+							if(listsRef.playerList[self.shooterId].hp < 3){
+								listsRef.playerList[self.shooterId].hp++;
+							}
 						}
 						self.toRemove = true;
 					}

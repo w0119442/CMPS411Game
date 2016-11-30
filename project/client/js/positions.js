@@ -145,7 +145,8 @@
 				var baseX = data.base[i].x - pCenterX + pOffsetX;
 				var baseY = data.base[i].y - pCenterY + pOffsetY;
 
-				ctx.drawImage(Img.base, baseX, baseY, 200, 200);	
+				ctx.drawImage(Img.base, baseX, baseY, 200, 200);
+				drawBaseHP(data.base[i].x, data.base[i].y, playerTeam, data.base[i]);
 			}
 		}
 		
