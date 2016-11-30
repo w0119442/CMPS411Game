@@ -48,10 +48,7 @@ setInterval(function() {
 	}
 	//console.log("base 0's x: " + playPackage.base[0].x);
 	//console.log("base 1's x: " + playPackage.base[1].x);
-	for (var i in score) {
-		console.log(score[i].name + ": " + score[i].kills);
-	}
-
+	
 	io.emit('newPositions', playPackage);
 }, 1000/25);
 

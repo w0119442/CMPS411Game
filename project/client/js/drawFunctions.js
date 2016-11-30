@@ -176,7 +176,7 @@
 			scoreText = score[i].name + ": " + score[i].kills;
 			
 			ctx.font = '15px Arial';
-			ctx.fillStyle = 'black';
+			ctx.fillStyle = "#FFFFFF";
 			ctx.fillText(scoreText, 30 ,(16*i)+30);
 
 		}

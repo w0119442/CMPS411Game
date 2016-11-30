@@ -128,13 +128,6 @@
 					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);
 					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].mouseAngle, Img.playerTop, PLAYER_SIZE);	
 				}
-				
-				/*
-				else if(deadPlayerIds.indexOf(data.player[i].id) > -1) {
-					Snd.death.currentTime = 0;
-					Snd.death.play();
-					deadPlayerIds.splice(0,deadPlayerIds.length);
-				}*/
 			}
 		}
 		
@@ -146,7 +139,8 @@
 				var baseY = data.base[i].y - pCenterY + pOffsetY;
 
 				ctx.drawImage(Img.base, baseX, baseY, 200, 200);
-				drawBaseHP(data.base[i].x, data.base[i].y, playerTeam, data.base[i]);
+				//drawBaseHP(data.base[i].x, data.base[i].y, playerTeam, data.base[i]);
+				drawBaseHP(baseX, baseY + 200 , playerTeam, data.base[i]);
 			}
 		}
 		
