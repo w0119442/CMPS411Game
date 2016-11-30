@@ -23,6 +23,8 @@ var Projectile = projectileRef.Projectile;
 		self.alive = true;
 		self.hp = 3;
 		self.deathTimer = 0;
+		self.magazine = 5;
+		self.reloadTimer = 0;
 		self.playerKills = 0;
 		self.size = 50;
 		self.radius = self.size / 2;
@@ -49,6 +51,11 @@ var Projectile = projectileRef.Projectile;
 				self.x = globals.MAP_SIZE - self.size;
 			}
 			self.y = globals.MAP_SIZE / 2;
+		}
+		
+		self.reload = function(){
+			self.magazine = 5;
+			self.reloadTimer = 0;
 		}
 		
 		self.updatePosition = function() {		
@@ -116,9 +123,12 @@ var Projectile = projectileRef.Projectile;
 		}
 		
 		self.shootProjectile = function(angle, shooterId){
-			var projectile = Projectile(angle, shooterId);
-			projectile.x = self.x + self.radius;
-			projectile.y = self.y + self.radius;
+			if(self.magazine > 0){
+				var projectile = Projectile(angle, shooterId);
+				self.magazine--;
+				projectile.x = self.x + self.radius;
+				projectile.y = self.y + self.radius;
+			}
 		}
 		
 		listsRef.playerList[self.id] = self;

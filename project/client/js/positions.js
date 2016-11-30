@@ -91,10 +91,10 @@
 				ctx.font = '15px Arial';
 				ctx.fillText(playerName, startName, pOffsetY - 25);
 				
-				// Draw kill count (temp / test)
-				var killCount = "" + data.player[i].playerKills;
-				ctx.font = '30px Arial';
-				ctx.fillText(killCount, pOffsetX + PLAYER_SIZE/2, pOffsetY -5);
+				// Draw magazine 
+				var magazine = "" + data.player[i].magazine;
+				ctx.font = '20px Arial';
+				ctx.fillText(magazine, pOffsetX + PLAYER_SIZE/2, pOffsetY -5);
 				
 				if(data.player[i].playerKills > pKills) {
 					Snd.death.currentTime = 0;
@@ -120,9 +120,9 @@
 					ctx.fillText(playerName, startName, otherY - 25);
 					
 					// Draw kill count (temp / test)
-					var killCount = "" + data.player[i].playerKills;
-					ctx.font = '30px Arial';
-					ctx.fillText(killCount, otherX + PLAYER_SIZE/2, otherY - 5);
+					//var killCount = "" + data.player[i].playerKills;
+					//ctx.font = '30px Arial';
+					//ctx.fillText(killCount, otherX + PLAYER_SIZE/2, otherY - 5);
 				
 					// Draw player base and player top
 					drawPlayer(otherX + PLAYER_SIZE/2, otherY + PLAYER_SIZE/2, data.player[i].directAngle, Img.playerBase, PLAYER_SIZE);

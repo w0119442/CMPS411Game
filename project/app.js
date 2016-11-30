@@ -69,7 +69,7 @@ io.sockets.on('connection', function(socket) {
 	}
 	console.log("Address: " + address);
 	
-	if(address == undefined || ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && ipAdd.length < 100) {
+	if(address == undefined || ipAdd.length < 1 || ipAdd.indexOf(address) == -1 && ipAdd.length < 100){
 		ipAdd.push(address);
 		
 		socket.id = Math.random();
@@ -163,6 +163,11 @@ Player.update = function(){
 		else{
 			player.updatePosition();
 		}
+		if (player.magazine < 1){
+			if (player.reloadTimer++ > 100){
+				player.reload();
+			}
+		}
 		playPackage[i] ={
 			x:player.x,
 			y:player.y,
@@ -172,6 +177,7 @@ Player.update = function(){
 			directAngle:player.directAngle,
 			speed:player.maxSpeed,
 			hp:player.hp,
+			magazine:player.magazine,
 			team:player.team,
 			alive:player.alive,
 			playerKills:player.playerKills,
